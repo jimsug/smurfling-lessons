@@ -1,0 +1,114 @@
+---
+import Layout from '../../../layouts/Layout.astro'
+import Badge from '../../../components/Badge.astro'
+import { getCollection } from 'astro:content'
+import { ops } from '../../../data/ops'
+import { lessonHref } from '../../../lib/lessons'
+import type { GetStaticPaths } from 'astro'
+
+export const getStaticPaths = (() =>
+  ops.map((op) => ({
+    params: { op: op.slug },
+    props: { op },
+  }))) satisfies GetStaticPaths
+
+const { op } = Astro.props
+const lessons = (
+  await getCollection('lessons', ({ data }) => data.op === op.slug)
+).sort((a, b) => a.data.order - b.data.order)
+const opTitle = op.title.replace(/^Op:\s*/, '')
+
+const sortedOps = [...ops].sort((a, b) => a.order - b.order)
+const opIndex = sortedOps.findIndex((o) => o.slug === op.slug)
+const prevOp = sortedOps[opIndex - 1] ?? null
+const nextOp = sortedOps[opIndex + 1] ?? null
+---
+
+<Layout title={`${op.title} — Smurfling Guide`} description={op.description}>
+  <nav class="text-xs text-muted" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-glow">Dashboard</a>
+    <span aria-hidden="true">&nbsp;/&nbsp;</span>
+    <span aria-current="page">Op {op.order}</span>
+  </nav>
+
+  <header class="mt-3 flex items-center gap-4">
+    <Badge slug={op.slug} order={op.order} title={op.title} size="lg" />
+    <div class="min-w-0">
+      <h1 class="text-xl font-bold text-fg">{opTitle}</h1>
+      <p class="mt-1 text-sm text-muted">{op.description}</p>
+      <p class="js-only mt-2 text-xs text-muted">
+        <span data-op-count>0/{lessons.length}</span> lessons complete
+      </p>
+    </div>
+  </header>
+
+  <ul
+    class="mt-6 divide-y divide-edge/60 overflow-hidden rounded-lg border border-edge"
+  >
+    {
+      lessons.map((lesson) => (
+        <li class="flex items-start gap-3 bg-panel p-4">
+          <label class="js-only -m-2.5 flex items-center p-2.5">
+            <input
+              type="checkbox"
+              data-lesson-key={lesson.id}
+              class="size-6 accent-resistance"
+              aria-label={`Mark "${lesson.data.title}" complete`}
+            />
+          </label>
+          <div class="min-w-0">
+            <a
+              href={lessonHref(lesson)}
+              class="font-medium text-fg hover:text-glow"
+            >
+              {lesson.data.order}. {lesson.data.title}
+            </a>
+            <p class="mt-0.5 text-sm text-muted">{lesson.data.summary}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="js-only mt-4 text-xs text-muted">Progress is saved on this device.</p>
+
+  <nav
+    class="mt-10 flex gap-3 border-t border-edge/60 pt-6"
+    aria-label="Adjacent operations"
+  >
+    {
+      prevOp ? (
+        <a
+          href={`/ops/${prevOp.slug}/`}
+          class="flex-1 rounded-lg border border-edge bg-panel p-3 transition hover:border-resistance/60"
+        >
+          <span class="block text-xs text-muted">← Previous op</span>
+          <span class="mt-0.5 block font-display text-sm font-semibold text-fg">
+            {prevOp.title.replace(/^Op:\s*/, '')}
+          </span>
+        </a>
+      ) : (
+        <span class="flex-1" />
+      )
+    }
+    {
+      nextOp ? (
+        <a
+          href={`/ops/${nextOp.slug}/`}
+          class="flex-1 rounded-lg border border-edge bg-panel p-3 text-right transition hover:border-resistance/60"
+        >
+          <span class="block text-xs text-muted">Next op →</span>
+          <span class="mt-0.5 block font-display text-sm font-semibold text-fg">
+            {nextOp.title.replace(/^Op:\s*/, '')}
+          </span>
+        </a>
+      ) : (
+        <span class="flex-1" />
+      )
+    }
+  </nav>
+
+  <script>
+    import '../../../scripts/op.ts'
+  </script>
+</Layout>

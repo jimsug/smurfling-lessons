@@ -1,0 +1,32 @@
+---
+// Inline coloured medal tier. Use in lesson MDX: "<Medal tier="gold" />" or
+// with custom text "<Medal tier="gold">Golds</Medal>". The swatch keeps pale
+// tiers (silver/platinum) distinguishable from each other and from body text.
+type Tier = 'bronze' | 'silver' | 'gold' | 'platinum' | 'onyx'
+interface Props {
+  tier: Tier
+}
+const { tier } = Astro.props
+const label = tier.charAt(0).toUpperCase() + tier.slice(1)
+---
+
+<span class="medal" style={`--medal-color: var(--color-tier-${tier}, currentColor)`}>
+  <span class="swatch" aria-hidden="true"></span><slot>{label}</slot>
+</span>
+
+<style>
+  .medal {
+    color: var(--medal-color);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .swatch {
+    display: inline-block;
+    width: 0.5em;
+    height: 0.5em;
+    margin-right: 0.25em;
+    border-radius: 9999px;
+    background-color: var(--medal-color);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--medal-color) 45%, transparent);
+  }
+</style>

@@ -1,0 +1,29 @@
+---
+import { glossaryById } from '../data/glossary'
+import { uid } from '../lib/uid'
+
+interface Props {
+  id: string
+}
+
+const { id } = Astro.props
+const entry = glossaryById[id]
+const popId = uid('gd')
+---
+
+{
+  entry ? (
+    <span class="term-wrap">
+      <button type="button" class="term" popovertarget={popId}>
+        <slot>{entry.term}</slot><span class="sr-only"> definition</span>
+      </button>
+      <span popover="auto" id={popId} class="term-pop">
+        <strong class="term-pop-title">{entry.term}</strong>
+        <span class="term-pop-def">{entry.definition}</span>
+        <a class="term-pop-link" href={`/glossary/#${id}`}>Open glossary</a>
+      </span>
+    </span>
+  ) : (
+    <slot>{id}</slot>
+  )
+}

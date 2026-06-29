@@ -1,0 +1,63 @@
+# Smurfling Guide
+
+A mobile-first static site that onboards new Resistance players to Ingress.
+Lives at [guide.join.blue](https://guide.join.blue).
+
+It replaces the old smurfling.guide: refreshed for current game mechanics, built
+for a phone, and aimed at getting a freshly recruited agent operational
+alongside their local team.
+
+## Stack
+
+- Astro (static SSG, no SSR adapter)
+- Tailwind v4 via the `@tailwindcss/vite` plugin
+- MDX lessons through Astro's Content Layer API (`glob()` loader)
+- TypeScript throughout, near-zero client JS
+- Self-hosted fonts (Chakra Petch for display, Inter for body), no external requests
+
+## What's here
+
+- A dashboard styled as an agent profile: a hex medal case, overall readiness,
+  and a card per op.
+- Six ops of six lessons each (36 in all), written and fact-checked against
+  current Ingress mechanics.
+- A searchable glossary that links each term to the lesson covering it, plus
+  inline term definitions in lessons via the native Popover API.
+- A resources page that points new agents at their local community.
+- Progress tracking in localStorage that lights an op badge when its lessons are
+  done. No accounts, no analytics, no cookies.
+
+## Develop
+
+Needs Node >= 22.12 and pnpm.
+
+```sh
+pnpm install
+pnpm dev      # local dev server
+pnpm build    # static build to dist/
+pnpm preview  # serve the built output
+pnpm check    # type-check
+```
+
+## Content
+
+- Op metadata: `src/data/ops.ts` (six ops, fixed order).
+- Lessons: MDX under `src/content/lessons/<op>/<lesson>.mdx`, loaded as the
+  `lessons` collection. Frontmatter: `title`, `op`, `order`, `summary`.
+- Glossary: `src/data/glossary.ts`, with each term mapped to its lesson.
+
+Lessons can use a few MDX components: `<Lvl n={8} />` colours a portal or agent
+level, `<Medal tier="gold" />` a medal tier, and `<Term id="xm">XM</Term>` adds
+an inline definition. Spots that want artwork are marked with
+`{/* VISUAL: ... */}`.
+
+## Deploy
+
+Pushes to `main` build and publish to GitHub Pages via
+`.github/workflows/deploy.yml`. The custom domain is pinned by `public/CNAME`.
+
+## Licence
+
+Site code is MIT (`LICENSE`). Guide content is CC BY-SA 4.0 (`LICENSE-CONTENT`).
+
+Inspired by the original smurfling.guide. Not affiliated with Niantic Spatial.

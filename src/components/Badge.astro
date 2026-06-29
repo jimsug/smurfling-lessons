@@ -1,0 +1,53 @@
+---
+interface Props {
+  slug: string
+  order: number
+  title: string
+  earned?: boolean
+  size?: 'sm' | 'lg'
+}
+
+const { slug, order, title, earned = false, size = 'sm' } = Astro.props
+const dim = size === 'lg' ? 104 : 80
+const name = title.replace(/^Op:\s*/, '')
+const lockedSrc = `/badges/${slug}-locked.svg`
+const activeSrc = `/badges/${slug}-active.svg`
+---
+
+<span
+  class:list={['badge', { 'is-earned': earned }]}
+  data-op-badge={slug}
+  style={`--badge-size:${dim}px`}
+>
+  <span class="art" role="img" aria-label={`Op ${order}: ${name}`}>
+    {/* Both variants ship; CSS shows one. No request on toggle, no flash. */}
+    <img class="badge-img badge-locked" src={lockedSrc} alt="" width={dim} height={dim} />
+    <img class="badge-img badge-active" src={activeSrc} alt="" width={dim} height={dim} />
+  </span>
+  <span class="sr-only" data-badge-status>{earned ? 'earned' : 'locked'}</span>
+</span>
+
+<style>
+  .badge {
+    display: inline-flex;
+  }
+  .art {
+    display: inline-flex;
+    width: var(--badge-size, 80px);
+    height: var(--badge-size, 80px);
+  }
+  .badge-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .badge-active {
+    display: none;
+  }
+  .badge.is-earned .badge-locked {
+    display: none;
+  }
+  .badge.is-earned .badge-active {
+    display: block;
+  }
+</style>

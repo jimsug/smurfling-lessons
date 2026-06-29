@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Badge from '../components/Badge.astro'
+import OpCard from '../components/OpCard.astro'
+import { getCollection } from 'astro:content'
+import { ops, TOTAL_LESSONS } from '../data/ops'
+
+const lessons = await getCollection('lessons')
+const sortedOps = [...ops].sort((a, b) => a.order - b.order)
+
+const opKeys = (slug: string) =>
+  lessons.filter((lesson) => lesson.data.op === slug).map((lesson) => lesson.id)
+
+const progressData = {
+  total: TOTAL_LESSONS,
+  ops: sortedOps.map((op) => ({ slug: op.slug, keys: opKeys(op.slug) })),
+}
+---
+
+<Layout title="Smurfling Guide">
+  <section class="space-y-2">
+    <p class="eyebrow">Resistance · Agent onboarding</p>
+    <h1 class="text-3xl font-bold text-fg">Agent dashboard</h1>
+    <p class="text-muted">Getting new Resistance agents operational, fast.</p>
+  </section>
+
+  <section class="js-only mt-6 rounded-xl border border-edge bg-panel p-4">
+    <div class="flex items-end justify-between gap-3">
+      <span class="eyebrow">Operational readiness</span>
+      <span class="font-display text-2xl font-bold tabular-nums text-glow">
+        <span data-progress-count>0</span><span class="text-muted">
+          / {TOTAL_LESSONS}</span
+        >
+      </span>
+    </div>
+    <div
+      class="mt-3 h-2 overflow-hidden rounded-full bg-night ring-1 ring-edge"
+      role="progressbar"
+      aria-valuemin="0"
+      aria-valuemax={TOTAL_LESSONS}
+      aria-valuenow="0"
+      aria-label="Lessons complete"
+    >
+      <div
+        class="h-full rounded-full bg-gradient-to-r from-resistance to-glow transition-[width] duration-500"
+        style="width:0%"
+        data-progress-bar
+      >
+      </div>
+    </div>
+    <p class="mt-2 text-xs text-muted">Progress is saved on this device.</p>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="eyebrow">Medal case</h2>
+    <ul class="mt-4 grid grid-cols-3 gap-x-3 gap-y-5">
+      {
+        sortedOps.map((op) => (
+          <li class="flex flex-col items-center gap-2 text-center">
+            <Badge slug={op.slug} order={op.order} title={op.title} />
+            <span class="text-[11px] leading-tight text-muted" aria-hidden="true">
+              {op.title.replace(/^Op:\s*/, '')}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="eyebrow">Operations</h2>
+    <div class="mt-4 space-y-3">
+      {
+        sortedOps.map((op) => (
+          <OpCard op={op} lessonCount={opKeys(op.slug).length} />
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="js-only mt-10 border-t border-edge/60 pt-4">
+    <button
+      type="button"
+      data-reset
+      class="text-xs text-muted underline-offset-2 hover:text-fg hover:underline"
+    >
+      Reset progress
+    </button>
+  </section>
+
+  <script
+    type="application/json"
+    id="progress-data"
+    is:inline
+    set:html={JSON.stringify(progressData)}
+  />
+  <script>
+    import '../scripts/dashboard.ts'
+  </script>
+</Layout>

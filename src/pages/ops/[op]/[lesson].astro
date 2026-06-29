@@ -1,0 +1,146 @@
+---
+import Layout from '../../../layouts/Layout.astro'
+import { getCollection, render } from 'astro:content'
+import { opsBySlug } from '../../../data/ops'
+import { lessonHref, lessonSlug, orderedLessons } from '../../../lib/lessons'
+import Lvl from '../../../components/Lvl.astro'
+import Medal from '../../../components/Medal.astro'
+import Term from '../../../components/Term.astro'
+import type { GetStaticPaths } from 'astro'
+
+export const getStaticPaths = (async () => {
+  const ordered = orderedLessons(await getCollection('lessons'))
+  return ordered.map((entry, i) => {
+    const prev = ordered[i - 1]
+    const next = ordered[i + 1]
+    return {
+      params: { op: entry.data.op, lesson: lessonSlug(entry) },
+      props: {
+        entry,
+        prev: prev ? { href: lessonHref(prev), title: prev.data.title } : null,
+        next: next ? { href: lessonHref(next), title: next.data.title } : null,
+      },
+    }
+  })
+}) satisfies GetStaticPaths
+
+const { entry, prev, next } = Astro.props
+const { Content } = await render(entry)
+const op = opsBySlug[entry.data.op]
+const opTitle = op.title.replace(/^Op:\s*/, '')
+---
+
+<Layout
+  title={`${entry.data.title} — Smurfling Guide`}
+  description={entry.data.summary}
+>
+  <nav class="text-xs text-muted" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-glow">Dashboard</a>
+    <span aria-hidden="true">&nbsp;/&nbsp;</span>
+    <a href={`/ops/${op.slug}/`} class="hover:text-glow">{opTitle}</a>
+    <span aria-hidden="true">&nbsp;/&nbsp;</span>
+    <span aria-current="page">Lesson {entry.data.order}</span>
+  </nav>
+
+  <h1 class="mt-3 text-2xl font-bold text-fg">{entry.data.title}</h1>
+  <p class="mt-1 text-muted">{entry.data.summary}</p>
+
+  <button
+    type="button"
+    class="mark-complete js-only mt-4"
+    data-mark-complete
+    data-lesson-key={entry.id}
+    aria-pressed="false"
+  >
+    <svg class="check" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+      <path
+        d="M2 8.5 L6.5 13 L14 3.5"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+    <span data-mark-label>Mark complete</span>
+  </button>
+
+  <article class="lesson-prose mt-8">
+    <Content components={{ Lvl, Medal, Term }} />
+  </article>
+
+  <nav
+    class="mt-12 flex gap-3 border-t border-edge/60 pt-6"
+    aria-label="Lesson navigation"
+  >
+    {
+      prev ? (
+        <a href={prev.href} class="lesson-nav group flex-1">
+          <span class="block text-xs text-muted">← Previous</span>
+          <span class="mt-0.5 block text-sm font-medium text-fg group-hover:text-glow">
+            {prev.title}
+          </span>
+        </a>
+      ) : (
+        <span class="flex-1" />
+      )
+    }
+    {
+      next ? (
+        <a href={next.href} class="lesson-nav group flex-1 text-right">
+          <span class="block text-xs text-muted">Next →</span>
+          <span class="mt-0.5 block text-sm font-medium text-fg group-hover:text-glow">
+            {next.title}
+          </span>
+        </a>
+      ) : (
+        <span class="flex-1" />
+      )
+    }
+  </nav>
+
+  <script>
+    import '../../../scripts/lesson.ts'
+  </script>
+</Layout>
+
+<style>
+  .mark-complete {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--color-resistance);
+    border-radius: 0.4rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-glow);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .mark-complete .check {
+    opacity: 0.35;
+    transition: opacity 0.2s ease;
+  }
+  .mark-complete.is-done {
+    background-color: var(--color-resistance);
+    border-color: var(--color-resistance);
+    color: var(--color-night);
+  }
+  .mark-complete.is-done .check {
+    opacity: 1;
+  }
+
+  .lesson-nav {
+    display: block;
+    border: 1px solid var(--color-edge);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    background-color: var(--color-panel);
+    transition: border-color 0.2s ease;
+  }
+  .lesson-nav:hover {
+    border-color: color-mix(in oklab, var(--color-resistance) 60%, transparent);
+  }
+</style>

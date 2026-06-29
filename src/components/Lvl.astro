@@ -1,0 +1,22 @@
+---
+// Inline coloured portal/agent level (1-8), tinted with the Ingress level
+// colour scale. Use in lesson MDX: "a level <Lvl n={8} /> portal".
+interface Props {
+  n: number
+}
+const { n } = Astro.props
+const level = Math.min(8, Math.max(1, Math.round(n)))
+---
+
+<span class="lvl" style={`--lvl-color: var(--color-level-${level}, currentColor)`}
+  >{level}</span
+>
+
+<style>
+  .lvl {
+    color: var(--lvl-color);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+</style>

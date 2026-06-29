@@ -1,0 +1,83 @@
+---
+import '../styles/global.css'
+
+interface Props {
+  title: string
+  description?: string
+}
+
+const {
+  title,
+  description = 'Onboarding for new Resistance agents in Ingress.',
+} = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href="/fonts/inter-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/chakra-petch-700.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <title>{title}</title>
+    {/* Mark the document as JS-capable before paint so .js-only controls
+        show without a flash, and stay hidden when JS is off. */}
+    <script is:inline>
+      document.documentElement.classList.add('js')
+    </script>
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <header class="border-b border-edge/70">
+      <div
+        class="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-4"
+      >
+        <a href="/" class="font-semibold tracking-wide text-glow">Smurfling Guide</a>
+        <nav class="flex items-center gap-4 text-sm">
+          <a href="/glossary/" class="text-muted hover:text-glow">Glossary</a>
+          <a href="/resources/" class="text-muted hover:text-glow">Resources</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
+      <slot />
+    </main>
+
+    <footer class="border-t border-edge/70 text-sm text-muted">
+      <div class="mx-auto w-full max-w-3xl space-y-2 px-4 py-6">
+        <nav class="flex flex-wrap gap-x-4 gap-y-1" aria-label="Footer">
+          <a href="/" class="hover:text-glow">Dashboard</a>
+          <a href="/glossary/" class="hover:text-glow">Glossary</a>
+          <a href="/resources/" class="hover:text-glow">Resources</a>
+        </nav>
+        <p>
+          Inspired by the original{' '}
+          <a href="https://smurfling.guide" class="text-resistance hover:text-glow"
+            >smurfling.guide</a
+          >.
+        </p>
+        <p>
+          Content licensed{' '}
+          <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/"
+            class="text-resistance hover:text-glow">CC BY-SA 4.0</a
+          >; site code MIT. Not affiliated with Niantic Spatial.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

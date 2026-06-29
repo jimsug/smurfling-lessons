@@ -1,0 +1,19 @@
+# build output
+dist/
+
+# generated types and cache
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+*-debug.log*
+
+# environment
+.env
+.env.production
+
+# editor / os
+.DS_Store
+*.local
