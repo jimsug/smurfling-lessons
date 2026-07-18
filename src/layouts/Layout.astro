@@ -1,19 +1,21 @@
 ---
 import '../styles/global.css'
+import { defaultLocale, type Locale } from '../i18n/locales'
+import { useTranslations } from '../i18n/ui'
 
 interface Props {
   title: string
   description?: string
 }
 
-const {
-  title,
-  description = 'Onboarding for new Resistance agents in Ingress.',
-} = Astro.props
+const locale = (Astro.currentLocale as Locale) ?? defaultLocale
+const t = useTranslations(locale)
+
+const { title, description = t('meta.defaultDescription') } = Astro.props
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -47,8 +49,8 @@ const {
       >
         <a href="/" class="font-semibold tracking-wide text-glow">Smurfling Guide</a>
         <nav class="flex items-center gap-4 text-sm">
-          <a href="/glossary/" class="text-muted hover:text-glow">Glossary</a>
-          <a href="/resources/" class="text-muted hover:text-glow">Resources</a>
+          <a href="/glossary/" class="text-muted hover:text-glow">{t('nav.glossary')}</a>
+          <a href="/resources/" class="text-muted hover:text-glow">{t('nav.resources')}</a>
         </nav>
       </div>
     </header>
@@ -60,24 +62,37 @@ const {
     <footer class="border-t border-edge/70 text-sm text-muted">
       <div class="mx-auto w-full max-w-3xl space-y-2 px-4 py-6">
         <nav class="flex flex-wrap gap-x-4 gap-y-1" aria-label="Footer">
-          <a href="/" class="hover:text-glow">Dashboard</a>
-          <a href="/glossary/" class="hover:text-glow">Glossary</a>
-          <a href="/resources/" class="hover:text-glow">Resources</a>
+          <a href="/" class="hover:text-glow">{t('nav.dashboard')}</a>
+          <a href="/glossary/" class="hover:text-glow">{t('nav.glossary')}</a>
+          <a href="/resources/" class="hover:text-glow">{t('nav.resources')}</a>
         </nav>
         <p>
-          Inspired by the original{' '}
+          {t('footer.inspiredBy')}{' '}
           <a href="https://smurfling.guide" class="text-resistance hover:text-glow"
             >smurfling.guide</a
           >.
         </p>
         <p>
-          Content licensed{' '}
+          {t('footer.licensedPrefix')}{' '}
           <a
             href="https://creativecommons.org/licenses/by-sa/4.0/"
             class="text-resistance hover:text-glow">CC BY-SA 4.0</a
-          >; site code MIT. Not affiliated with Niantic Spatial.
+          >{t('footer.licenseSuffix')}
         </p>
       </div>
     </footer>
+
+    <script
+      type="application/json"
+      id="i18n-strings"
+      is:inline
+      set:html={JSON.stringify({
+        confirmReset: t('dashboard.confirmReset'),
+        markComplete: t('lesson.markComplete'),
+        completed: t('lesson.completed'),
+        earned: t('badge.earned'),
+        locked: t('badge.locked'),
+      })}
+    />
   </body>
 </html>
