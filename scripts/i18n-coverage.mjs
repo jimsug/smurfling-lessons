@@ -3,7 +3,7 @@
 // step, so it stays runnable regardless of the TS toolchain.
 import { appendFileSync, existsSync, readdirSync } from 'node:fs'
 
-const DEFAULT_LOCALE = 'en'
+const DEFAULT_LOCALE = 'en-au'
 const base = 'src/content/lessons'
 
 const ops = readdirSync(`${base}/${DEFAULT_LOCALE}`)

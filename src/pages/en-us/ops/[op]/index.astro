@@ -1,31 +1,31 @@
 ---
-import Layout from '../../../layouts/Layout.astro'
-import Badge from '../../../components/Badge.astro'
-import { getOps } from '../../../data/ops'
-import { lessonHref, lessonsForLocale } from '../../../lib/lessons'
-import { lessonKey } from '../../../lib/progress'
-import { defaultLocale, type Locale } from '../../../i18n/locales'
-import { useTranslations } from '../../../i18n/ui'
-import { localizedPath } from '../../../i18n/paths'
+import Layout from '../../../../layouts/Layout.astro'
+import Badge from '../../../../components/Badge.astro'
+import { getOps } from '../../../../data/ops'
+import { lessonHref, lessonsForLocale } from '../../../../lib/lessons'
+import { lessonKey } from '../../../../lib/progress'
+import { defaultLocale, type Locale } from '../../../../i18n/locales'
+import { useTranslations } from '../../../../i18n/ui'
+import { localizedPath } from '../../../../i18n/paths'
 import type { GetStaticPaths } from 'astro'
 
 // getStaticPaths is extracted into its own module scope by Astro's
 // compiler: it cannot see plain consts declared elsewhere in this
-// frontmatter, only imports (hence `defaultLocale` rather than a local alias).
+// frontmatter (including a LOCALE const declared here), only imports -
+// hence the literal 'en-us' inline rather than a shared local constant.
 export const getStaticPaths = (() =>
-  getOps(defaultLocale).map((op) => ({
+  getOps('en-us').map((op) => ({
     params: { op: op.slug },
     props: { op },
   }))) satisfies GetStaticPaths
 
+const LOCALE: Locale = 'en-us'
 const { op } = Astro.props
 const locale = (Astro.currentLocale as Locale) ?? defaultLocale
 const t = useTranslations(locale)
-const lessons = (await lessonsForLocale(defaultLocale)).filter(
-  (lesson) => lesson.op === op.slug,
-)
+const lessons = (await lessonsForLocale(LOCALE)).filter((lesson) => lesson.op === op.slug)
 
-const sortedOps = [...getOps(defaultLocale)].sort((a, b) => a.order - b.order)
+const sortedOps = [...getOps(LOCALE)].sort((a, b) => a.order - b.order)
 const opIndex = sortedOps.findIndex((o) => o.slug === op.slug)
 const prevOp = sortedOps[opIndex - 1] ?? null
 const nextOp = sortedOps[opIndex + 1] ?? null
@@ -116,6 +116,6 @@ const nextOp = sortedOps[opIndex + 1] ?? null
   </nav>
 
   <script>
-    import '../../../scripts/op.ts'
+    import '../../../../scripts/op.ts'
   </script>
 </Layout>

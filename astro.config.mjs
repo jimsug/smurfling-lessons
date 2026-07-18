@@ -14,6 +14,8 @@ export default defineConfig({
     defaultLocale,
     routing: {
       prefixDefaultLocale: false,
+      fallback: { 'en-us': 'en-au' },
+      fallbackType: 'rewrite',
     },
   },
   integrations: [mdx()],

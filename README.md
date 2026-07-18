@@ -26,6 +26,8 @@ alongside their local team.
 - A resources page that points new agents at their local community.
 - Progress tracking in localStorage that lights an op badge when its lessons are
   done. No accounts, no analytics, no cookies.
+- Australian and US English, with a language switcher and automatic
+  browser-language detection on first visit.
 
 ## Develop
 
@@ -33,28 +35,47 @@ Needs Node >= 22.12 and pnpm.
 
 ```sh
 pnpm install
-pnpm dev      # local dev server
-pnpm build    # static build to dist/
-pnpm preview  # serve the built output
-pnpm check    # type-check
+pnpm dev            # local dev server
+pnpm build          # static build to dist/
+pnpm preview        # serve the built output
+pnpm check          # type-check
+pnpm test           # unit tests (vitest)
+pnpm i18n:coverage  # lesson-translation coverage per locale
 ```
 
 ## Content
 
-- Op metadata: `src/data/ops.ts` (six ops, fixed order).
-- Lessons: MDX under `src/content/lessons/<op>/<lesson>.mdx`, loaded as the
-  `lessons` collection. Frontmatter: `title`, `op`, `order`, `summary`.
-- Glossary: `src/data/glossary.ts`, with each term mapped to its lesson.
+- Op metadata: `src/data/ops.ts` - stable metadata (slug, order, badge) plus
+  per-locale text (title, description), read via `getOps(locale)`.
+- Lessons: MDX under `src/content/lessons/<locale>/<op>/<lesson>.mdx`, loaded
+  as the `lessons` collection. Frontmatter: `title`, `op`, `order`, `summary`.
+- Glossary: `src/data/glossary.ts`, same stable-id-plus-per-locale-text shape,
+  read via `getGlossary(locale)`, with each term mapped to its lesson.
 
 Lessons can use a few MDX components: `<Lvl n={8} />` colours a portal or agent
 level, `<Medal tier="gold" />` a medal tier, and `<Term id="xm">XM</Term>` adds
 an inline definition. Spots that want artwork are marked with
 `{/* VISUAL: ... */}`.
 
+## Internationalisation
+
+Two locales today: `en-au` (default, unprefixed - `/ops/...`) and `en-us`
+(`/en-us/ops/...`), differing only in spelling (colour/organise/centred vs
+color/organize/centered, etc.) - the language switcher and browser-language
+detection are both live. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to
+add a further locale.
+
 ## Deploy
 
 Pushes to `main` build and publish to GitHub Pages via
 `.github/workflows/deploy.yml`. The custom domain is pinned by `public/CNAME`.
+Pull requests and pushes to `development` run type-checking, tests, and a
+build via `.github/workflows/ci.yml`.
+
+## Contributing
+
+Feature and fix branches target `development`, not `main` - see
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Licence
 
