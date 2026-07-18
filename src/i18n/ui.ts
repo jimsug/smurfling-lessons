@@ -1,6 +1,6 @@
 import type { Locale } from './locales'
 
-const en = {
+export const en = {
   'nav.glossary': 'Glossary',
   'nav.resources': 'Resources',
   'nav.dashboard': 'Dashboard',
@@ -70,4 +70,11 @@ export function useTranslations(locale: Locale) {
       template,
     )
   }
+}
+
+/** Which keys a non-default locale has actually translated, as opposed to
+ *  falling back to English - useTranslations() alone can't distinguish the
+ *  two, since it deliberately masks missing keys with the English value. */
+export function translatedKeys(locale: Exclude<Locale, 'en'>): UIKey[] {
+  return Object.keys(overrides[locale] ?? {}) as UIKey[]
 }
