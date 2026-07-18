@@ -1,64 +1,105 @@
-export interface Op {
+import type { Locale } from '../i18n/locales'
+import { defaultLocale } from '../i18n/locales'
+
+export interface OpMeta {
   /** route + file slug */
   slug: string
-  /** display title, e.g. "Op: Agent Basics" */
-  title: string
   /** fixed display order, 1-6 */
   order: number
-  /** one-line description for the dashboard card */
-  description: string
   /** public path to the op badge SVG */
   badge: string
 }
 
-export const ops: Op[] = [
+export interface OpText {
+  /** display title, e.g. "Op: Agent Basics" */
+  title: string
+  /** title with the "Op: " prefix stripped, for contexts that don't want it */
+  shortTitle: string
+  /** one-line description for the dashboard card */
+  description: string
+}
+
+export interface Op extends OpMeta, OpText {}
+
+export const opsMeta: OpMeta[] = [
   {
     slug: 'welcome-to-the-resistance',
-    title: 'Op: Welcome to the Resistance',
     order: 1,
-    description: 'Meet the Resistance and find the people who brought you in.',
     badge: '/badges/welcome-to-the-resistance.svg',
   },
   {
     slug: 'agent-basics',
-    title: 'Op: Agent Basics',
     order: 2,
-    description: 'The scanner, portals, XM, and how you level up.',
     badge: '/badges/agent-basics.svg',
   },
   {
     slug: 'field-operations',
-    title: 'Op: Field Operations',
     order: 3,
-    description: 'Linking, fielding, and reading the Intel map.',
     badge: '/badges/field-operations.svg',
   },
   {
     slug: 'combat-ready',
-    title: 'Op: Combat Ready',
     order: 4,
-    description: 'Weapons, mods, and holding ground.',
     badge: '/badges/combat-ready.svg',
   },
   {
     slug: 'gear-logistics',
-    title: 'Op: Gear & Logistics',
     order: 5,
-    description: 'Inventory, gear, farming, and keeping stocked.',
     badge: '/badges/gear-logistics.svg',
   },
   {
     slug: 'deep-cover',
-    title: 'Op: Deep Cover',
     order: 6,
-    description: 'Anomalies, missions, and the wider world you are now part of.',
     badge: '/badges/deep-cover.svg',
   },
 ]
 
-export const opsBySlug: Record<string, Op> = Object.fromEntries(
-  ops.map((op) => [op.slug, op])
-)
+const opsText: Record<Locale, Partial<Record<string, OpText>>> = {
+  en: {
+    'welcome-to-the-resistance': {
+      title: 'Op: Welcome to the Resistance',
+      shortTitle: 'Welcome to the Resistance',
+      description: 'Meet the Resistance and find the people who brought you in.',
+    },
+    'agent-basics': {
+      title: 'Op: Agent Basics',
+      shortTitle: 'Agent Basics',
+      description: 'The scanner, portals, XM, and how you level up.',
+    },
+    'field-operations': {
+      title: 'Op: Field Operations',
+      shortTitle: 'Field Operations',
+      description: 'Linking, fielding, and reading the Intel map.',
+    },
+    'combat-ready': {
+      title: 'Op: Combat Ready',
+      shortTitle: 'Combat Ready',
+      description: 'Weapons, mods, and holding ground.',
+    },
+    'gear-logistics': {
+      title: 'Op: Gear & Logistics',
+      shortTitle: 'Gear & Logistics',
+      description: 'Inventory, gear, farming, and keeping stocked.',
+    },
+    'deep-cover': {
+      title: 'Op: Deep Cover',
+      shortTitle: 'Deep Cover',
+      description: 'Anomalies, missions, and the wider world you are now part of.',
+    },
+  },
+}
 
-/** Total lessons across all ops. */
+/** All ops for `locale`, falling back to the default locale's text if untranslated. */
+export function getOps(locale: Locale): Op[] {
+  return opsMeta.map((meta) => ({
+    ...meta,
+    ...(opsText[locale]?.[meta.slug] ?? opsText[defaultLocale][meta.slug]!),
+  }))
+}
+
+export function getOpsBySlug(locale: Locale): Record<string, Op> {
+  return Object.fromEntries(getOps(locale).map((op) => [op.slug, op]))
+}
+
+/** Total lessons across all ops. Locale-independent. */
 export const TOTAL_LESSONS = 36

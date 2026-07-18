@@ -1,33 +1,42 @@
 ---
 import Layout from '../../../layouts/Layout.astro'
-import { getCollection, render } from 'astro:content'
-import { opsBySlug } from '../../../data/ops'
-import { lessonHref, lessonSlug, orderedLessons } from '../../../lib/lessons'
+import { render } from 'astro:content'
+import { getOpsBySlug } from '../../../data/ops'
+import { lessonHref, lessonSlug, lessonsForLocale } from '../../../lib/lessons'
+import { lessonKey } from '../../../lib/progress'
+import { defaultLocale } from '../../../i18n/locales'
 import Lvl from '../../../components/Lvl.astro'
 import Medal from '../../../components/Medal.astro'
 import Term from '../../../components/Term.astro'
 import type { GetStaticPaths } from 'astro'
 
+// getStaticPaths is extracted into its own module scope by Astro's
+// compiler: it cannot see plain consts declared elsewhere in this
+// frontmatter, only imports (hence `defaultLocale` rather than a local alias).
 export const getStaticPaths = (async () => {
-  const ordered = orderedLessons(await getCollection('lessons'))
-  return ordered.map((entry, i) => {
-    const prev = ordered[i - 1]
-    const next = ordered[i + 1]
+  const list = await lessonsForLocale(defaultLocale)
+  return list.map(({ entry, op, slug, isFallback }, i) => {
+    const prev = list[i - 1]
+    const next = list[i + 1]
     return {
-      params: { op: entry.data.op, lesson: lessonSlug(entry) },
+      params: { op, lesson: slug },
       props: {
         entry,
-        prev: prev ? { href: lessonHref(prev), title: prev.data.title } : null,
-        next: next ? { href: lessonHref(next), title: next.data.title } : null,
+        isFallback,
+        prev: prev
+          ? { href: lessonHref(defaultLocale, prev.op, prev.slug), title: prev.entry.data.title }
+          : null,
+        next: next
+          ? { href: lessonHref(defaultLocale, next.op, next.slug), title: next.entry.data.title }
+          : null,
       },
     }
   })
 }) satisfies GetStaticPaths
 
-const { entry, prev, next } = Astro.props
+const { entry, isFallback, prev, next } = Astro.props
 const { Content } = await render(entry)
-const op = opsBySlug[entry.data.op]
-const opTitle = op.title.replace(/^Op:\s*/, '')
+const op = getOpsBySlug(defaultLocale)[entry.data.op]
 ---
 
 <Layout
@@ -37,7 +46,7 @@ const opTitle = op.title.replace(/^Op:\s*/, '')
   <nav class="text-xs text-muted" aria-label="Breadcrumb">
     <a href="/" class="hover:text-glow">Dashboard</a>
     <span aria-hidden="true">&nbsp;/&nbsp;</span>
-    <a href={`/ops/${op.slug}/`} class="hover:text-glow">{opTitle}</a>
+    <a href={`/ops/${op.slug}/`} class="hover:text-glow">{op.shortTitle}</a>
     <span aria-hidden="true">&nbsp;/&nbsp;</span>
     <span aria-current="page">Lesson {entry.data.order}</span>
   </nav>
@@ -45,11 +54,19 @@ const opTitle = op.title.replace(/^Op:\s*/, '')
   <h1 class="mt-3 text-2xl font-bold text-fg">{entry.data.title}</h1>
   <p class="mt-1 text-muted">{entry.data.summary}</p>
 
+  {
+    isFallback && (
+      <p class="mt-3 rounded-md border border-edge bg-panel px-3 py-2 text-sm text-muted">
+        This lesson isn't translated yet — showing the English version.
+      </p>
+    )
+  }
+
   <button
     type="button"
     class="mark-complete js-only mt-4"
     data-mark-complete
-    data-lesson-key={entry.id}
+    data-lesson-key={lessonKey(entry.data.op, lessonSlug(entry))}
     aria-pressed="false"
   >
     <svg class="check" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">

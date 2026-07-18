@@ -1,11 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro'
-import { getCollection } from 'astro:content'
-import { glossary, termLesson } from '../data/glossary'
+import { getGlossary, termLesson } from '../data/glossary'
+import { lessonHref, lessonsForLocale } from '../lib/lessons'
+import type { Locale } from '../i18n/locales'
 
-const sorted = [...glossary].sort((a, b) => a.term.localeCompare(b.term))
-const lessons = await getCollection('lessons')
-const lessonTitle = new Map(lessons.map((lesson) => [lesson.id, lesson.data.title]))
+const locale: Locale = 'en'
+const sorted = [...getGlossary(locale)].sort((a, b) => a.term.localeCompare(b.term, locale))
+const lessons = await lessonsForLocale(locale)
+const lessonByKey = new Map(lessons.map((lesson) => [`${lesson.op}/${lesson.slug}`, lesson]))
 ---
 
 <Layout
@@ -34,8 +36,8 @@ const lessonTitle = new Map(lessons.map((lesson) => [lesson.id, lesson.data.titl
   <dl class="mt-6 divide-y divide-edge/60">
     {
       sorted.map((entry) => {
-        const lessonId = termLesson[entry.id]
-        const title = lessonId ? lessonTitle.get(lessonId) : undefined
+        const lessonRef = termLesson[entry.id]
+        const lesson = lessonRef ? lessonByKey.get(lessonRef) : undefined
         return (
           <div
             id={entry.id}
@@ -45,10 +47,13 @@ const lessonTitle = new Map(lessons.map((lesson) => [lesson.id, lesson.data.titl
           >
             <dt class="font-semibold text-fg">{entry.term}</dt>
             <dd class="mt-0.5 text-sm text-muted">{entry.definition}</dd>
-            {title && (
+            {lesson && (
               <dd class="mt-1 text-xs">
-                <a href={`/ops/${lessonId}/`} class="text-resistance hover:text-glow">
-                  Covered in {title} →
+                <a
+                  href={lessonHref(locale, lesson.op, lesson.slug)}
+                  class="text-resistance hover:text-glow"
+                >
+                  Covered in {lesson.entry.data.title} →
                 </a>
               </dd>
             )}

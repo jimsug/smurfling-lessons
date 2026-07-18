@@ -2,14 +2,17 @@
 import Layout from '../layouts/Layout.astro'
 import Badge from '../components/Badge.astro'
 import OpCard from '../components/OpCard.astro'
-import { getCollection } from 'astro:content'
-import { ops, TOTAL_LESSONS } from '../data/ops'
+import { getOps, TOTAL_LESSONS } from '../data/ops'
+import { lessonsForLocale } from '../lib/lessons'
+import { lessonKey } from '../lib/progress'
+import type { Locale } from '../i18n/locales'
 
-const lessons = await getCollection('lessons')
-const sortedOps = [...ops].sort((a, b) => a.order - b.order)
+const locale: Locale = 'en'
+const lessons = await lessonsForLocale(locale)
+const sortedOps = [...getOps(locale)].sort((a, b) => a.order - b.order)
 
 const opKeys = (slug: string) =>
-  lessons.filter((lesson) => lesson.data.op === slug).map((lesson) => lesson.id)
+  lessons.filter((lesson) => lesson.op === slug).map((lesson) => lessonKey(lesson.op, lesson.slug))
 
 const progressData = {
   total: TOTAL_LESSONS,
@@ -57,9 +60,9 @@ const progressData = {
       {
         sortedOps.map((op) => (
           <li class="flex flex-col items-center gap-2 text-center">
-            <Badge slug={op.slug} order={op.order} title={op.title} />
+            <Badge slug={op.slug} order={op.order} shortTitle={op.shortTitle} />
             <span class="text-[11px] leading-tight text-muted" aria-hidden="true">
-              {op.title.replace(/^Op:\s*/, '')}
+              {op.shortTitle}
             </span>
           </li>
         ))
