@@ -9,18 +9,139 @@ const { path } = stripLocalePrefix(Astro.url.pathname)
 
 {
   locales.length > 1 && (
-    <nav aria-label="Language" class="flex flex-wrap gap-x-3 gap-y-1 text-sm">
-      {locales.map((code) =>
-        code === locale ? (
-          <span aria-current="true" class="text-glow">
-            {localeNames[code]}
-          </span>
-        ) : (
-          <a href={getRelativeLocaleUrl(code, path)} class="text-muted hover:text-glow">
-            {localeNames[code]}
-          </a>
-        ),
-      )}
-    </nav>
+    <>
+      {/* Native Popover API: popovertarget makes the button an implicit
+          anchor for the menu, opening/closing it with no JS at all. */}
+      <button
+        type="button"
+        popovertarget="language-menu"
+        aria-label="Language"
+        class="language-button"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          width="20"
+          height="20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m5 8 6 6" />
+          <path d="m4 14 6-6 2-3" />
+          <path d="M2 5h12" />
+          <path d="M7 2h1" />
+          <path d="m22 22-5-10-5 10" />
+          <path d="M14 18h6" />
+        </svg>
+      </button>
+      <div popover="auto" id="language-menu" class="language-menu">
+        {locales.map((code) =>
+          code === locale ? (
+            <span aria-current="true" class="language-menu-current">
+              <svg
+                class="language-menu-check"
+                viewBox="0 0 16 16"
+                width="14"
+                height="14"
+                aria-hidden="true"
+              >
+                <path
+                  d="M2 8.5 L6.5 13 L14 3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+              </svg>
+              {localeNames[code]}
+            </span>
+          ) : (
+            <a href={getRelativeLocaleUrl(code, path)} class="language-menu-link">
+              <span class="language-menu-check" aria-hidden="true" />
+              {localeNames[code]}
+            </a>
+          ),
+        )}
+      </div>
+    </>
   )
 }
+
+<style>
+  .language-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem;
+    border-radius: 0.375rem;
+    color: var(--color-muted);
+  }
+  .language-button:hover {
+    color: var(--color-glow);
+  }
+  .language-button:focus-visible {
+    outline: 2px solid var(--color-resistance);
+    outline-offset: 2px;
+  }
+
+  .language-menu {
+    margin: 0;
+    margin-top: 0.5rem;
+    inset: auto;
+    /* Anchor positioning (position-area) places this just below the
+       trigger button in supporting browsers. Elsewhere it falls back to
+       the popover default (centred in the viewport) - still fully
+       functional, just less polished. */
+    position-area: bottom span-left;
+    min-width: 11rem;
+    padding: 0.4rem;
+    border: 1px solid var(--color-edge);
+    border-radius: 0.5rem;
+    background-color: var(--color-panel-2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  /* display must stay scoped to :popover-open - author CSS overrides the
+     UA stylesheet's [popover]:not(:popover-open) { display: none } by
+     cascade origin regardless of specificity, so an unconditional
+     `display: flex` above would leave the menu permanently visible. */
+  .language-menu:popover-open {
+    display: flex;
+  }
+  .language-menu::backdrop {
+    background: rgba(0, 0, 0, 0.4);
+  }
+  .language-menu-current,
+  .language-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+  }
+  /* Fixed-width slot for the check mark, present (empty) on every row so
+     the active row's mark doesn't shift its label out of line with the
+     rest - and so the mark isn't the only cue distinguishing it (colour
+     alone isn't an accessible way to convey the current selection). */
+  .language-menu-check {
+    flex: none;
+    width: 14px;
+    height: 14px;
+  }
+  .language-menu-current {
+    color: var(--color-glow);
+    font-weight: 600;
+  }
+  .language-menu-link {
+    color: var(--color-muted);
+  }
+  .language-menu-link:hover {
+    color: var(--color-glow);
+    background-color: var(--color-night);
+  }
+</style>
