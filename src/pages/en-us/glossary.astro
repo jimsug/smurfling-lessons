@@ -1,0 +1,67 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { getGlossary, termLesson } from '../../data/glossary'
+import { lessonHref, lessonsForLocale } from '../../lib/lessons'
+import { defaultLocale, type Locale } from '../../i18n/locales'
+import { useTranslations } from '../../i18n/ui'
+
+const locale = (Astro.currentLocale as Locale) ?? defaultLocale
+const t = useTranslations(locale)
+const sorted = [...getGlossary(locale)].sort((a, b) => a.term.localeCompare(b.term, locale))
+const lessons = await lessonsForLocale(locale)
+const lessonByKey = new Map(lessons.map((lesson) => [`${lesson.op}/${lesson.slug}`, lesson]))
+---
+
+<Layout title={`${t('nav.glossary')} — Smurfling Guide`} description={t('glossary.metaDescription')}>
+  <p class="eyebrow">{t('glossary.eyebrow')}</p>
+  <h1 class="text-2xl font-bold text-fg">{t('nav.glossary')}</h1>
+  <p class="mt-1 text-muted">
+    {t('glossary.intro')}
+  </p>
+
+  <div class="js-only mt-4">
+    <input
+      type="search"
+      data-glossary-search
+      placeholder={t('glossary.filterPlaceholder')}
+      aria-label={t('glossary.filterAriaLabel')}
+      autocomplete="off"
+      class="w-full rounded-md border border-edge bg-panel px-3 py-2 text-fg placeholder:text-muted"
+    />
+    <p class="mt-2 text-sm text-muted" data-glossary-empty hidden>{t('glossary.noMatches')}</p>
+  </div>
+
+  <dl class="mt-6 divide-y divide-edge/60">
+    {
+      sorted.map((entry) => {
+        const lessonRef = termLesson[entry.id]
+        const lesson = lessonRef ? lessonByKey.get(lessonRef) : undefined
+        return (
+          <div
+            id={entry.id}
+            data-term
+            data-term-text={`${entry.term} ${entry.definition}`.toLowerCase()}
+            class="scroll-mt-24 py-3"
+          >
+            <dt class="font-semibold text-fg">{entry.term}</dt>
+            <dd class="mt-0.5 text-sm text-muted">{entry.definition}</dd>
+            {lesson && (
+              <dd class="mt-1 text-xs">
+                <a
+                  href={lessonHref(locale, lesson.op, lesson.slug)}
+                  class="text-resistance hover:text-glow"
+                >
+                  {t('glossary.coveredIn', { title: lesson.entry.data.title })}
+                </a>
+              </dd>
+            )}
+          </div>
+        )
+      })
+    }
+  </dl>
+
+  <script>
+    import '../../scripts/glossary.ts'
+  </script>
+</Layout>

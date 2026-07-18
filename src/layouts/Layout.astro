@@ -3,7 +3,7 @@ import '../styles/global.css'
 import { getAbsoluteLocaleUrl } from 'astro:i18n'
 import { locales, defaultLocale, type Locale } from '../i18n/locales'
 import { useTranslations } from '../i18n/ui'
-import { stripLocalePrefix } from '../i18n/paths'
+import { stripLocalePrefix, localizedPath } from '../i18n/paths'
 import LanguageSwitcher from '../components/LanguageSwitcher.astro'
 
 interface Props {
@@ -17,6 +17,9 @@ const t = useTranslations(locale)
 const { title, description = t('meta.defaultDescription') } = Astro.props
 
 const { path: canonicalPath } = stripLocalePrefix(Astro.url.pathname)
+const home = localizedPath('/', locale)
+const glossaryPath = localizedPath('/glossary/', locale)
+const resourcesPath = localizedPath('/resources/', locale)
 ---
 
 <!doctype html>
@@ -56,12 +59,14 @@ const { path: canonicalPath } = stripLocalePrefix(Astro.url.pathname)
       <div
         class="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-4"
       >
-        <a href="/" class="font-semibold tracking-wide text-glow">Smurfling Guide</a>
-        <nav class="flex items-center gap-4 text-sm">
-          <a href="/glossary/" class="text-muted hover:text-glow">{t('nav.glossary')}</a>
-          <a href="/resources/" class="text-muted hover:text-glow">{t('nav.resources')}</a>
+        <a href={home} class="font-semibold tracking-wide text-glow">Smurfling Guide</a>
+        <div class="flex items-center gap-4">
+          <nav class="flex items-center gap-4 text-sm">
+            <a href={glossaryPath} class="text-muted hover:text-glow">{t('nav.glossary')}</a>
+            <a href={resourcesPath} class="text-muted hover:text-glow">{t('nav.resources')}</a>
+          </nav>
           <LanguageSwitcher />
-        </nav>
+        </div>
       </div>
     </header>
 
@@ -72,9 +77,9 @@ const { path: canonicalPath } = stripLocalePrefix(Astro.url.pathname)
     <footer class="border-t border-edge/70 text-sm text-muted">
       <div class="mx-auto w-full max-w-3xl space-y-2 px-4 py-6">
         <nav class="flex flex-wrap gap-x-4 gap-y-1" aria-label="Footer">
-          <a href="/" class="hover:text-glow">{t('nav.dashboard')}</a>
-          <a href="/glossary/" class="hover:text-glow">{t('nav.glossary')}</a>
-          <a href="/resources/" class="hover:text-glow">{t('nav.resources')}</a>
+          <a href={home} class="hover:text-glow">{t('nav.dashboard')}</a>
+          <a href={glossaryPath} class="hover:text-glow">{t('nav.glossary')}</a>
+          <a href={resourcesPath} class="hover:text-glow">{t('nav.resources')}</a>
         </nav>
         <p>
           {t('footer.inspiredBy')}{' '}

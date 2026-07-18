@@ -1,7 +1,11 @@
-export const locales = ['en'] as const
+export const locales = ['en-au', 'en-us'] as const
 export type Locale = (typeof locales)[number]
-export const defaultLocale: Locale = 'en'
+// No `: Locale` annotation - kept as its inferred literal type so
+// `Exclude<Locale, typeof defaultLocale>` resolves to the other locale(s)
+// instead of widening to `never`.
+export const defaultLocale = 'en-au'
 
 export const localeNames: Record<Locale, string> = {
-  en: 'English',
+  'en-au': 'English (Australia)',
+  'en-us': 'English (US)',
 }

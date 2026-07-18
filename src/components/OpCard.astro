@@ -2,6 +2,7 @@
 import type { Op } from '../data/ops'
 import { defaultLocale, type Locale } from '../i18n/locales'
 import { useTranslations } from '../i18n/ui'
+import { localizedPath } from '../i18n/paths'
 
 interface Props {
   op: Op
@@ -14,7 +15,7 @@ const t = useTranslations(locale)
 ---
 
 <a
-  href={`/ops/${op.slug}/`}
+  href={localizedPath(`/ops/${op.slug}/`, locale)}
   class="op-card flex items-center gap-4 rounded-xl border border-edge bg-panel p-4 transition hover:border-resistance/60"
   data-op-card={op.slug}
 >
