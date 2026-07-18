@@ -57,9 +57,9 @@ const resourcesPath = localizedPath('/resources/', locale)
   <body class="flex min-h-dvh flex-col">
     <header class="border-b border-edge/70">
       <div
-        class="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-4"
+        class="mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-4"
       >
-        <a href={home} class="font-semibold tracking-wide text-glow">Smurfling Guide</a>
+        <a href={home} class="shrink-0 font-semibold tracking-wide text-glow">Smurfling Guide</a>
         <div class="flex items-center gap-4">
           <nav class="flex items-center gap-4 text-sm">
             <a href={glossaryPath} class="text-muted hover:text-glow">{t('nav.glossary')}</a>

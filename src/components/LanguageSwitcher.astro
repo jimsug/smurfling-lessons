@@ -9,18 +9,20 @@ const { path } = stripLocalePrefix(Astro.url.pathname)
 
 {
   locales.length > 1 && (
-    <nav aria-label="Language" class="flex flex-wrap gap-x-3 gap-y-1 text-sm">
-      {locales.map((code) =>
-        code === locale ? (
-          <span aria-current="true" class="text-glow">
-            {localeNames[code]}
-          </span>
-        ) : (
-          <a href={getRelativeLocaleUrl(code, path)} class="text-muted hover:text-glow">
-            {localeNames[code]}
-          </a>
-        ),
-      )}
-    </nav>
+    <select
+      data-language-switcher
+      aria-label="Language"
+      class="rounded-md border border-edge bg-panel px-2 py-1 text-sm text-muted hover:text-glow focus:text-glow focus:outline-none focus:ring-1 focus:ring-resistance"
+    >
+      {locales.map((code) => (
+        <option value={getRelativeLocaleUrl(code, path)} selected={code === locale}>
+          {localeNames[code]}
+        </option>
+      ))}
+    </select>
   )
 }
+
+<script>
+  import '../scripts/language-switcher.ts'
+</script>
