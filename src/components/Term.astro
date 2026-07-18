@@ -1,13 +1,15 @@
 ---
-import { glossaryById } from '../data/glossary'
+import { getGlossaryById } from '../data/glossary'
 import { uid } from '../lib/uid'
+import type { Locale } from '../i18n/locales'
 
 interface Props {
   id: string
 }
 
 const { id } = Astro.props
-const entry = glossaryById[id]
+const locale: Locale = 'en'
+const entry = getGlossaryById(locale)[id]
 const popId = uid('gd')
 ---
 

@@ -2,14 +2,13 @@
 interface Props {
   slug: string
   order: number
-  title: string
+  shortTitle: string
   earned?: boolean
   size?: 'sm' | 'lg'
 }
 
-const { slug, order, title, earned = false, size = 'sm' } = Astro.props
+const { slug, order, shortTitle, earned = false, size = 'sm' } = Astro.props
 const dim = size === 'lg' ? 104 : 80
-const name = title.replace(/^Op:\s*/, '')
 const lockedSrc = `/badges/${slug}-locked.svg`
 const activeSrc = `/badges/${slug}-active.svg`
 ---
@@ -19,7 +18,7 @@ const activeSrc = `/badges/${slug}-active.svg`
   data-op-badge={slug}
   style={`--badge-size:${dim}px`}
 >
-  <span class="art" role="img" aria-label={`Op ${order}: ${name}`}>
+  <span class="art" role="img" aria-label={`Op ${order}: ${shortTitle}`}>
     {/* Both variants ship; CSS shows one. No request on toggle, no flash. */}
     <img class="badge-img badge-locked" src={lockedSrc} alt="" width={dim} height={dim} />
     <img class="badge-img badge-active" src={activeSrc} alt="" width={dim} height={dim} />
