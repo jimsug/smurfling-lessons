@@ -33,28 +33,47 @@ Needs Node >= 22.12 and pnpm.
 
 ```sh
 pnpm install
-pnpm dev      # local dev server
-pnpm build    # static build to dist/
-pnpm preview  # serve the built output
-pnpm check    # type-check
+pnpm dev            # local dev server
+pnpm build          # static build to dist/
+pnpm preview        # serve the built output
+pnpm check          # type-check
+pnpm test           # unit tests (vitest)
+pnpm i18n:coverage  # lesson-translation coverage per locale
 ```
 
 ## Content
 
-- Op metadata: `src/data/ops.ts` (six ops, fixed order).
-- Lessons: MDX under `src/content/lessons/<op>/<lesson>.mdx`, loaded as the
-  `lessons` collection. Frontmatter: `title`, `op`, `order`, `summary`.
-- Glossary: `src/data/glossary.ts`, with each term mapped to its lesson.
+- Op metadata: `src/data/ops.ts` - stable metadata (slug, order, badge) plus
+  per-locale text (title, description), read via `getOps(locale)`.
+- Lessons: MDX under `src/content/lessons/<locale>/<op>/<lesson>.mdx`, loaded
+  as the `lessons` collection. Frontmatter: `title`, `op`, `order`, `summary`.
+- Glossary: `src/data/glossary.ts`, same stable-id-plus-per-locale-text shape,
+  read via `getGlossary(locale)`, with each term mapped to its lesson.
 
 Lessons can use a few MDX components: `<Lvl n={8} />` colours a portal or agent
 level, `<Medal tier="gold" />` a medal tier, and `<Term id="xm">XM</Term>` adds
 an inline definition. Spots that want artwork are marked with
 `{/* VISUAL: ... */}`.
 
+## Internationalisation
+
+Astro's native i18n routing is wired up (`astro.config.mjs`), with English as
+the only live locale today - the routing, the UI string dictionary
+(`src/i18n/ui.ts`), the language switcher, and browser-language detection all
+exist and work, but sit dormant until a second locale is actually added. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for how to add one.
+
 ## Deploy
 
 Pushes to `main` build and publish to GitHub Pages via
 `.github/workflows/deploy.yml`. The custom domain is pinned by `public/CNAME`.
+Pull requests and pushes to `development` run type-checking, tests, and a
+build via `.github/workflows/ci.yml`.
+
+## Contributing
+
+Feature and fix branches target `development`, not `main` - see
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Licence
 
