@@ -1,5 +1,7 @@
 ---
 import type { Op } from '../data/ops'
+import { defaultLocale, type Locale } from '../i18n/locales'
+import { useTranslations } from '../i18n/ui'
 
 interface Props {
   op: Op
@@ -7,6 +9,8 @@ interface Props {
 }
 
 const { op, lessonCount } = Astro.props
+const locale = (Astro.currentLocale as Locale) ?? defaultLocale
+const t = useTranslations(locale)
 ---
 
 <a
@@ -24,7 +28,7 @@ const { op, lessonCount } = Astro.props
       class="block font-display text-sm font-semibold tabular-nums text-glow"
       data-op-count>0/{lessonCount}</span
     >
-    <span class="block text-[10px] tracking-wide text-muted uppercase">done</span>
+    <span class="block text-[10px] tracking-wide text-muted uppercase">{t('opCard.doneLabel')}</span>
   </span>
 </a>
 

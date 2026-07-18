@@ -2,35 +2,33 @@
 import Layout from '../layouts/Layout.astro'
 import { getGlossary, termLesson } from '../data/glossary'
 import { lessonHref, lessonsForLocale } from '../lib/lessons'
-import type { Locale } from '../i18n/locales'
+import { defaultLocale, type Locale } from '../i18n/locales'
+import { useTranslations } from '../i18n/ui'
 
-const locale: Locale = 'en'
+const locale = (Astro.currentLocale as Locale) ?? defaultLocale
+const t = useTranslations(locale)
 const sorted = [...getGlossary(locale)].sort((a, b) => a.term.localeCompare(b.term, locale))
 const lessons = await lessonsForLocale(locale)
 const lessonByKey = new Map(lessons.map((lesson) => [`${lesson.op}/${lesson.slug}`, lesson]))
 ---
 
-<Layout
-  title="Glossary — Smurfling Guide"
-  description="Plain-language definitions of the Ingress terms used in this guide."
->
-  <p class="eyebrow">Reference</p>
-  <h1 class="text-2xl font-bold text-fg">Glossary</h1>
+<Layout title={`${t('nav.glossary')} — Smurfling Guide`} description={t('glossary.metaDescription')}>
+  <p class="eyebrow">{t('glossary.eyebrow')}</p>
+  <h1 class="text-2xl font-bold text-fg">{t('nav.glossary')}</h1>
   <p class="mt-1 text-muted">
-    Plain-language definitions of the terms used across the guide. Each links to
-    the lesson that covers it.
+    {t('glossary.intro')}
   </p>
 
   <div class="js-only mt-4">
     <input
       type="search"
       data-glossary-search
-      placeholder="Filter terms…"
-      aria-label="Filter glossary terms"
+      placeholder={t('glossary.filterPlaceholder')}
+      aria-label={t('glossary.filterAriaLabel')}
       autocomplete="off"
       class="w-full rounded-md border border-edge bg-panel px-3 py-2 text-fg placeholder:text-muted"
     />
-    <p class="mt-2 text-sm text-muted" data-glossary-empty hidden>No terms match.</p>
+    <p class="mt-2 text-sm text-muted" data-glossary-empty hidden>{t('glossary.noMatches')}</p>
   </div>
 
   <dl class="mt-6 divide-y divide-edge/60">
@@ -53,7 +51,7 @@ const lessonByKey = new Map(lessons.map((lesson) => [`${lesson.op}/${lesson.slug
                   href={lessonHref(locale, lesson.op, lesson.slug)}
                   class="text-resistance hover:text-glow"
                 >
-                  Covered in {lesson.entry.data.title} →
+                  {t('glossary.coveredIn', { title: lesson.entry.data.title })}
                 </a>
               </dd>
             )}
