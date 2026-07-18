@@ -1,0 +1,103 @@
+---
+import Layout from '../../layouts/Layout.astro'
+
+interface LinkItem {
+  href: string
+  label: string
+  note: string
+}
+
+const official: LinkItem[] = [
+  { href: 'https://ingress.com', label: 'ingress.com', note: 'news and the store' },
+  { href: 'https://intel.ingress.com', label: 'intel.ingress.com', note: 'the Intel Map' },
+  { href: 'https://wayfarer.nianticlabs.com', label: 'Niantic Wayfarer', note: 'portal nominations and reviews' },
+  { href: 'https://support.ingress.com', label: 'Ingress Help', note: 'official support and current rules' },
+]
+
+const community: LinkItem[] = [
+  { href: 'https://fevgames.net', label: 'Fev Games', note: 'IngressFS listings and detailed game guides' },
+  { href: 'https://bannergress.com', label: 'Bannergress', note: 'find and plan mission banners worldwide' },
+]
+---
+
+<Layout
+  title="Resources — Smurfling Guide"
+  description="Where to go next, and how to plug into your local Ingress community."
+>
+  <p class="eyebrow">Field guide</p>
+  <h1 class="text-2xl font-bold text-fg">Resources</h1>
+  <p class="mt-1 text-muted">
+    Where to go next, and how to plug into the people around you.
+  </p>
+
+  <section class="mt-8">
+    <h2 class="font-semibold text-fg">Find your local team</h2>
+    <p class="mt-1 text-sm text-muted">
+      The single most useful thing you can do. There is no one official channel,
+      communities run on Telegram, Discord, Signal and others, and each area sorts
+      out its own. The fastest way in:
+    </p>
+    <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-muted">
+      <li>Ask whoever sent you this link.</li>
+      <li>Post in faction comms: "new RES agent in [your area], where's the local chat?"</li>
+      <li>Turn up to a First Saturday and ask in person.</li>
+    </ul>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="font-semibold text-fg">Official Ingress</h2>
+    <ul class="mt-2 space-y-1 text-sm text-muted">
+      {
+        official.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-resistance hover:text-glow"
+            >
+              {item.label}
+            </a>
+            {` — ${item.note}.`}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="font-semibold text-fg">Community sites and tools</h2>
+    <p class="mt-1 text-sm text-muted">
+      Maintained by players, not Niantic. Your local team will have opinions on
+      what's worth using, so ask.
+    </p>
+    <ul class="mt-2 space-y-1 text-sm text-muted">
+      {
+        community.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-resistance hover:text-glow"
+            >
+              {item.label}
+            </a>
+            {` — ${item.note}.`}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="font-semibold text-fg">About this guide</h2>
+    <p class="mt-1 text-sm text-muted">
+      Inspired by the original
+      <a href="https://smurfling.guide" class="text-resistance hover:text-glow"
+        >smurfling.guide</a
+      >. Content licensed CC BY-SA 4.0; site code MIT. Not affiliated with Niantic
+      Spatial.
+    </p>
+  </section>
+</Layout>

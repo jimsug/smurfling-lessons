@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 
-// Only "en" is configured today; mock a richer locale list so the priority
-// logic (exact vs. base-subtag, earlier preference vs. later) is genuinely
-// exercised now rather than only once a second real locale exists.
+// Mocked with a different locale set than the real one (en-au/en-us) so the
+// priority logic (exact vs. base-subtag, earlier preference vs. later) is
+// tested independent of whatever locales happen to be configured for real.
 vi.mock('./locales', () => ({
   locales: ['en', 'es', 'pt-br'],
 }))

@@ -26,6 +26,8 @@ alongside their local team.
 - A resources page that points new agents at their local community.
 - Progress tracking in localStorage that lights an op badge when its lessons are
   done. No accounts, no analytics, no cookies.
+- Australian and US English, with a language switcher and automatic
+  browser-language detection on first visit.
 
 ## Develop
 
@@ -57,11 +59,11 @@ an inline definition. Spots that want artwork are marked with
 
 ## Internationalisation
 
-Astro's native i18n routing is wired up (`astro.config.mjs`), with English as
-the only live locale today - the routing, the UI string dictionary
-(`src/i18n/ui.ts`), the language switcher, and browser-language detection all
-exist and work, but sit dormant until a second locale is actually added. See
-[CONTRIBUTING.md](CONTRIBUTING.md) for how to add one.
+Two locales today: `en-au` (default, unprefixed - `/ops/...`) and `en-us`
+(`/en-us/ops/...`), differing only in spelling (colour/organise/centred vs
+color/organize/centered, etc.) - the language switcher and browser-language
+detection are both live. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to
+add a further locale.
 
 ## Deploy
 

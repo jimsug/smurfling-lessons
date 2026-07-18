@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { Locale } from '../i18n/locales'
 
 const existsSyncMock = vi.fn()
 vi.mock('node:fs', () => ({
@@ -13,8 +12,8 @@ describe('localizedAsset', () => {
     existsSyncMock.mockReset()
   })
 
-  it('passes the default locale straight through without touching the filesystem', () => {
-    expect(localizedAsset('/badges/agent-basics-active.svg', 'en')).toBe(
+  it('passes the default locale (en-au) straight through without touching the filesystem', () => {
+    expect(localizedAsset('/badges/agent-basics-active.svg', 'en-au')).toBe(
       '/badges/agent-basics-active.svg',
     )
     expect(existsSyncMock).not.toHaveBeenCalled()
@@ -22,15 +21,14 @@ describe('localizedAsset', () => {
 
   it('resolves to the locale variant when it exists on disk', () => {
     existsSyncMock.mockReturnValue(true)
-    // 'es' stands in for a future second locale - only "en" is configured today.
-    expect(localizedAsset('/badges/agent-basics-active.svg', 'es' as Locale)).toBe(
-      '/badges/agent-basics-active.es.svg',
+    expect(localizedAsset('/badges/agent-basics-active.svg', 'en-us')).toBe(
+      '/badges/agent-basics-active.en-us.svg',
     )
   })
 
   it('falls back to the default path when no variant exists', () => {
     existsSyncMock.mockReturnValue(false)
-    expect(localizedAsset('/badges/agent-basics-active.svg', 'es' as Locale)).toBe(
+    expect(localizedAsset('/badges/agent-basics-active.svg', 'en-us')).toBe(
       '/badges/agent-basics-active.svg',
     )
   })

@@ -55,7 +55,41 @@ export const opsMeta: OpMeta[] = [
 ]
 
 const opsText: Record<Locale, Partial<Record<string, OpText>>> = {
-  en: {
+  'en-au': {
+    'welcome-to-the-resistance': {
+      title: 'Op: Welcome to the Resistance',
+      shortTitle: 'Welcome to the Resistance',
+      description: 'Meet the Resistance and find the people who brought you in.',
+    },
+    'agent-basics': {
+      title: 'Op: Agent Basics',
+      shortTitle: 'Agent Basics',
+      description: 'The scanner, portals, XM, and how you level up.',
+    },
+    'field-operations': {
+      title: 'Op: Field Operations',
+      shortTitle: 'Field Operations',
+      description: 'Linking, fielding, and reading the Intel map.',
+    },
+    'combat-ready': {
+      title: 'Op: Combat Ready',
+      shortTitle: 'Combat Ready',
+      description: 'Weapons, mods, and holding ground.',
+    },
+    'gear-logistics': {
+      title: 'Op: Gear & Logistics',
+      shortTitle: 'Gear & Logistics',
+      description: 'Inventory, gear, farming, and keeping stocked.',
+    },
+    'deep-cover': {
+      title: 'Op: Deep Cover',
+      shortTitle: 'Deep Cover',
+      description: 'Anomalies, missions, and the wider world you are now part of.',
+    },
+  },
+  // No spelling differs between en-AU and en-US for any of these - kept
+  // explicit rather than left to fall back, so it's on record as reviewed.
+  'en-us': {
     'welcome-to-the-resistance': {
       title: 'Op: Welcome to the Resistance',
       shortTitle: 'Welcome to the Resistance',

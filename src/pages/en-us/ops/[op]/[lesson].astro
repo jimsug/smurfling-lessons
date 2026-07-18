@@ -1,22 +1,23 @@
 ---
-import Layout from '../../../layouts/Layout.astro'
+import Layout from '../../../../layouts/Layout.astro'
 import { render } from 'astro:content'
-import { getOpsBySlug } from '../../../data/ops'
-import { lessonHref, lessonSlug, lessonsForLocale } from '../../../lib/lessons'
-import { lessonKey } from '../../../lib/progress'
-import { defaultLocale, type Locale } from '../../../i18n/locales'
-import { useTranslations } from '../../../i18n/ui'
-import { localizedPath } from '../../../i18n/paths'
-import Lvl from '../../../components/Lvl.astro'
-import Medal from '../../../components/Medal.astro'
-import Term from '../../../components/Term.astro'
+import { getOpsBySlug } from '../../../../data/ops'
+import { lessonHref, lessonSlug, lessonsForLocale } from '../../../../lib/lessons'
+import { lessonKey } from '../../../../lib/progress'
+import { defaultLocale, type Locale } from '../../../../i18n/locales'
+import { useTranslations } from '../../../../i18n/ui'
+import { localizedPath } from '../../../../i18n/paths'
+import Lvl from '../../../../components/Lvl.astro'
+import Medal from '../../../../components/Medal.astro'
+import Term from '../../../../components/Term.astro'
 import type { GetStaticPaths } from 'astro'
 
 // getStaticPaths is extracted into its own module scope by Astro's
 // compiler: it cannot see plain consts declared elsewhere in this
-// frontmatter, only imports (hence `defaultLocale` rather than a local alias).
+// frontmatter (including a LOCALE const declared here), only imports -
+// hence the literal 'en-us' inline rather than a shared local constant.
 export const getStaticPaths = (async () => {
-  const list = await lessonsForLocale(defaultLocale)
+  const list = await lessonsForLocale('en-us')
   return list.map(({ entry, op, slug, isFallback }, i) => {
     const prev = list[i - 1]
     const next = list[i + 1]
@@ -25,22 +26,19 @@ export const getStaticPaths = (async () => {
       props: {
         entry,
         isFallback,
-        prev: prev
-          ? { href: lessonHref(defaultLocale, prev.op, prev.slug), title: prev.entry.data.title }
-          : null,
-        next: next
-          ? { href: lessonHref(defaultLocale, next.op, next.slug), title: next.entry.data.title }
-          : null,
+        prev: prev ? { href: lessonHref('en-us', prev.op, prev.slug), title: prev.entry.data.title } : null,
+        next: next ? { href: lessonHref('en-us', next.op, next.slug), title: next.entry.data.title } : null,
       },
     }
   })
 }) satisfies GetStaticPaths
 
+const LOCALE: Locale = 'en-us'
 const { entry, isFallback, prev, next } = Astro.props
 const locale = (Astro.currentLocale as Locale) ?? defaultLocale
 const t = useTranslations(locale)
 const { Content } = await render(entry)
-const op = getOpsBySlug(defaultLocale)[entry.data.op]
+const op = getOpsBySlug(LOCALE)[entry.data.op]
 ---
 
 <Layout
@@ -120,7 +118,7 @@ const op = getOpsBySlug(defaultLocale)[entry.data.op]
   </nav>
 
   <script>
-    import '../../../scripts/lesson.ts'
+    import '../../../../scripts/lesson.ts'
   </script>
 </Layout>
 
