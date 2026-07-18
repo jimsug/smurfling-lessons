@@ -1,4 +1,5 @@
 import { doneCount, isOpComplete, load, onChange, reset } from '../lib/progress'
+import { loadStrings } from './i18n-strings'
 
 interface OpData {
   slug: string
@@ -8,6 +9,12 @@ interface PageData {
   ops: OpData[]
   total: number
 }
+
+const strings = loadStrings({
+  confirmReset: 'Clear all saved progress on this device?',
+  earned: 'earned',
+  locked: 'locked',
+})
 
 const dataEl = document.getElementById('progress-data')
 if (dataEl?.textContent) {
@@ -39,7 +46,7 @@ if (dataEl?.textContent) {
       if (badge) {
         badge.classList.toggle('is-earned', complete)
         const status = badge.querySelector('[data-badge-status]')
-        if (status) status.textContent = complete ? 'earned' : 'locked'
+        if (status) status.textContent = complete ? strings.earned : strings.locked
       }
     }
 
@@ -61,6 +68,6 @@ if (dataEl?.textContent) {
   onChange(render)
 
   document.querySelector('[data-reset]')?.addEventListener('click', () => {
-    if (window.confirm('Clear all saved progress on this device?')) reset()
+    if (window.confirm(strings.confirmReset)) reset()
   })
 }

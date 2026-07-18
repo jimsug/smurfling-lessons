@@ -1,5 +1,7 @@
 ---
 import type { Op } from '../data/ops'
+import { defaultLocale, type Locale } from '../i18n/locales'
+import { useTranslations } from '../i18n/ui'
 
 interface Props {
   op: Op
@@ -7,7 +9,8 @@ interface Props {
 }
 
 const { op, lessonCount } = Astro.props
-const title = op.title.replace(/^Op:\s*/, '')
+const locale = (Astro.currentLocale as Locale) ?? defaultLocale
+const t = useTranslations(locale)
 ---
 
 <a
@@ -17,7 +20,7 @@ const title = op.title.replace(/^Op:\s*/, '')
 >
   <span class="op-num" aria-hidden="true">{op.order}</span>
   <span class="min-w-0 flex-1">
-    <span class="block font-display font-semibold text-fg">{title}</span>
+    <span class="block font-display font-semibold text-fg">{op.shortTitle}</span>
     <span class="mt-0.5 block text-sm text-muted">{op.description}</span>
   </span>
   <span class="js-only flex-none text-right">
@@ -25,7 +28,7 @@ const title = op.title.replace(/^Op:\s*/, '')
       class="block font-display text-sm font-semibold tabular-nums text-glow"
       data-op-count>0/{lessonCount}</span
     >
-    <span class="block text-[10px] tracking-wide text-muted uppercase">done</span>
+    <span class="block text-[10px] tracking-wide text-muted uppercase">{t('opCard.doneLabel')}</span>
   </span>
 </a>
 

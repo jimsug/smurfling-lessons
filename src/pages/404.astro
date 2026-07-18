@@ -1,15 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import { defaultLocale, type Locale } from '../i18n/locales'
+import { useTranslations } from '../i18n/ui'
+
+const locale = (Astro.currentLocale as Locale) ?? defaultLocale
+const t = useTranslations(locale)
 ---
 
 <Layout title="Not found — Smurfling Guide">
-  <p class="eyebrow">Signal lost</p>
-  <h1 class="text-2xl font-bold text-fg">Page not found</h1>
+  <p class="eyebrow">{t('notFound.eyebrow')}</p>
+  <h1 class="text-2xl font-bold text-fg">{t('notFound.title')}</h1>
   <p class="mt-2 text-muted">
-    That route isn't on the map. Head back to your dashboard, or check the
-    glossary and resources from the menu above.
+    {t('notFound.body')}
   </p>
   <p class="mt-4">
-    <a href="/" class="text-resistance hover:text-glow">← Agent dashboard</a>
+    <a href="/" class="text-resistance hover:text-glow">{t('notFound.backLink')}</a>
   </p>
 </Layout>
