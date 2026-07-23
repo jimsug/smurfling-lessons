@@ -41,6 +41,9 @@ pnpm preview        # serve the built output
 pnpm check          # type-check
 pnpm test           # unit tests (vitest)
 pnpm i18n:coverage  # lesson-translation coverage per locale
+pnpm screenshots    # screenshot lesson pages and upload to Weblate (needs
+                    # WEBLATE_API_TOKEN; supports --dry-run to save locally
+                    # instead)
 ```
 
 ## Content
@@ -68,9 +71,10 @@ add a further locale.
 ## Deploy
 
 Pushes to `main` build and publish to GitHub Pages via
-`.github/workflows/deploy.yml`. The custom domain is pinned by `public/CNAME`.
-Pull requests and pushes to `development` run type-checking, tests, and a
-build via `.github/workflows/ci.yml`.
+`.github/workflows/deploy.yml`, and, after a successful deploy, uploads fresh
+lesson screenshots to Weblate for translator context. The custom domain is
+pinned by `public/CNAME`. Pull requests and pushes to `development` run
+type-checking, tests, and a build via `.github/workflows/ci.yml`.
 
 ## Contributing
 

@@ -128,6 +128,24 @@ renaming one would just make the translation invisible rather than updating
 the URL. The same `<op>/<slug>` pair is also the key into
 `lesson-text/<locale>.json`, so a rename needs updating there too.
 
+### Translating via Weblate
+
+Lesson bodies and the JSON dictionaries above are managed through a hosted
+Weblate project at [hosted.weblate.org/projects/smurfling-guide](https://hosted.weblate.org/projects/smurfling-guide/),
+with each lesson as its own component (`<op>/<lesson>`).
+
+After every successful production deploy, `.github/workflows/deploy.yml`
+screenshots each lesson page and attaches the image to its matching Weblate
+component, so translators see the real page layout (tables, `<Lvl>`/`<Medal>`
+colouring and so on) alongside the strings they're translating, rather than
+translating blind. See `scripts/weblate-screenshots.mjs`.
+
+That job needs `WEBLATE_API_TOKEN` set as a repo secret (a project-scoped
+Weblate token, `wlp_` prefix, scoped to just `smurfling-guide`) - this is a
+manual setup step outside of any single PR, so if the job is failing check
+whether the secret's been added under repo Settings -> Secrets and
+variables -> Actions.
+
 ## Licence
 
 Site code is MIT (`LICENSE`); guide content is CC BY-SA 4.0
