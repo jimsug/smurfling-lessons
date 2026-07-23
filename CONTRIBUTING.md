@@ -76,31 +76,24 @@ file alongside it with just the spelling converted; don't leave one locale's
 copy of a lesson stale relative to the other.
 
 Adding a genuinely different (non-English) locale is content work, not
-plumbing work - the routing, dictionary, switcher, and detection already
-handle an arbitrary number of locales:
+plumbing work - the routing, dictionary, switcher, detection, and page files
+already handle an arbitrary number of locales:
 
 1. Add the locale code to `locales` (and a display name to `localeNames`) in
-   `src/i18n/locales.ts`. This alone makes the switcher and the
-   detection/redirect script go live for that locale.
+   `src/i18n/locales.ts`. This alone makes the switcher, the
+   detection/redirect script, and every page under `src/pages/[...locale]/`
+   go live for that locale.
 2. Fill in the locale's entries in `src/i18n/ui.ts`'s `overrides`. This is
    required *before* step 1 can land cleanly: `src/i18n/ui.test.ts` has a
    hard-gate test asserting every UI key has a translation for every
    configured non-default locale, so an incomplete dictionary fails CI.
 3. Fill in the locale's entries in `src/data/ops-text/<locale>.json` and
    `src/data/glossary-text/<locale>.json`.
-4. Add `src/pages/<locale>/index.astro`, `glossary.astro`, `resources.astro`,
-   `ops/[op]/index.astro`, and `[lesson].astro` - all five are thin wrappers,
-   copy the `en-us` ones and swap the locale constant/literal (including
-   inside `getStaticPaths` for the two dynamic-route files - see the comment
-   in either file about why it can't be a shared module-level const). None of
-   these carry hardcoded prose themselves; everything they render comes from
-   `src/i18n/ui.ts`'s dictionary, `getOps()`/`getGlossary()`, or
-   `lessonsForLocale()`.
-5. Add an entry to `routing.fallback` (e.g. `{ 'en-us': 'en-au', '<locale>':
+4. Add an entry to `routing.fallback` (e.g. `{ 'en-us': 'en-au', '<locale>':
    'en-au' }`) in `astro.config.mjs`'s `i18n` block, so any page in that
    locale you haven't built yet transparently shows the default version
    instead of 404ing.
-6. Translate lesson MDX incrementally under `src/content/lessons/<locale>/`,
+5. Translate lesson MDX incrementally under `src/content/lessons/<locale>/`,
    and the matching `title`/`summary` keys in `src/i18n/lesson-text/<locale>.json`.
    Nothing needs to be complete before it ships: `lessonsForLocale()` in
    `src/lib/lessons.ts` falls back to the default locale's copy of any lesson
@@ -115,7 +108,7 @@ handle an arbitrary number of locales:
    title and summary too, even if `lesson-text/<locale>.json` already has a
    translated entry for it. This avoids a translated heading sitting above an
    untranslated body and the "not yet translated" banner at the same time.
-7. If a translated lesson uses `<Term>`, check that its popover shows the
+6. If a translated lesson uses `<Term>`, check that its popover shows the
    right locale's definition. `Term.astro` resolves locale from the URL
    rather than `Astro.currentLocale`, since it's rendered from inside MDX
    content where that API is unreliable - if that ever stops holding up, pass

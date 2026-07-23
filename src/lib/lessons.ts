@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content'
 import { opsMeta } from '../data/ops'
 import { defaultLocale, type Locale } from '../i18n/locales'
 import { lessonText } from '../i18n/lesson-text'
+import { localizedPath } from '../i18n/paths'
 
 export type Lesson = CollectionEntry<'lessons'>
 
@@ -15,8 +16,7 @@ export function lessonSlug(entry: Lesson): string {
  *  an entry, since the rendered entry may be a fallback from another locale
  *  (see `lessonsForLocale`) and must not leak that locale into the URL. */
 export function lessonHref(locale: Locale, op: string, slug: string): string {
-  const prefix = locale === defaultLocale ? '' : `/${locale}`
-  return `${prefix}/ops/${op}/${slug}/`
+  return localizedPath(`/ops/${op}/${slug}/`, locale)
 }
 
 const opOrder = new Map(opsMeta.map((op) => [op.slug, op.order]))

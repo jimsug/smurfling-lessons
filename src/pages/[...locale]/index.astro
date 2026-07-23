@@ -5,8 +5,14 @@ import OpCard from '../../components/OpCard.astro'
 import { getOps, TOTAL_LESSONS } from '../../data/ops'
 import { lessonsForLocale } from '../../lib/lessons'
 import { lessonKey } from '../../lib/progress'
-import { defaultLocale, type Locale } from '../../i18n/locales'
+import { locales, defaultLocale, type Locale } from '../../i18n/locales'
 import { useTranslations } from '../../i18n/ui'
+import type { GetStaticPaths } from 'astro'
+
+export const getStaticPaths = (() =>
+  locales.map((locale) => ({
+    params: { locale: locale === defaultLocale ? undefined : locale },
+  }))) satisfies GetStaticPaths
 
 const locale = (Astro.currentLocale as Locale) ?? defaultLocale
 const t = useTranslations(locale)
