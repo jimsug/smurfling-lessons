@@ -1,0 +1,178 @@
+{
+  "anomaly": {
+    "term": "Anomaly",
+    "definition": "A large, city-based, cross-faction battle for control over a set window. The marquee Ingress event."
+  },
+  "ap": {
+    "term": "AP",
+    "definition": "Access Points, your experience. Earned mostly by building, linking and fielding, and what levels you up."
+  },
+  "banner": {
+    "term": "Banner",
+    "definition": "A set of missions whose icons tile into a larger picture on your profile. Built in rows of six."
+  },
+  "capsule": {
+    "term": "Capsule",
+    "definition": "A container holding up to 100 items, for sorting and trading gear. Contents still count toward your cap."
+  },
+  "cmu": {
+    "term": "CMU",
+    "definition": "Chaotic Matter Units, the in-game store currency."
+  },
+  "comms": {
+    "term": "Comms",
+    "definition": "The in-scanner chat, with a faction channel (your team) and an all channel (everyone in range)."
+  },
+  "control-field": {
+    "term": "Control field",
+    "definition": "The filled triangle made by linking three of your portals together. Scores AP and claims Mind Units."
+  },
+  "core": {
+    "term": "C.O.R.E.",
+    "definition": "The optional monthly subscription: a CMU grant, +500 inventory capacity, and a gear kit."
+  },
+  "dispatch": {
+    "term": "Dispatch",
+    "definition": "An in-scanner system that delivers events as Campaigns made of Bounties."
+  },
+  "enlightened": {
+    "term": "Enlightened",
+    "definition": "The green faction. The opposition."
+  },
+  "first-saturday": {
+    "term": "First Saturday",
+    "definition": "A monthly local meetup (IngressFS), and the best place for a new agent to start."
+  },
+  "flip-card": {
+    "term": "Flip card",
+    "definition": "An ADA Refactor or JARVIS Virus: a rare item that instantly flips a portal’s faction."
+  },
+  "fracker": {
+    "term": "PortalFracker",
+    "definition": "Deploy one and every item hacked from that portal is duplicated, for all agents, for ten minutes."
+  },
+  "glyph-hack": {
+    "term": "Glyph hack",
+    "definition": "Hacking by tracing a sequence of glyphs from memory, for bonus items and extra AP."
+  },
+  "hack": {
+    "term": "Hack",
+    "definition": "Tapping a portal to collect gear. Costs no XM, but limited by a cooldown and a burnout limit."
+  },
+  "heat-sink": {
+    "term": "Heat Sink",
+    "definition": "A hack mod that cuts a portal’s cooldown and, when you deploy it, resets the timers for you."
+  },
+  "hypercube": {
+    "term": "Hypercube",
+    "definition": "A rare power cube that tops your XM back up automatically as you spend, until it is empty."
+  },
+  "intel-map": {
+    "term": "Intel Map",
+    "definition": "intel.ingress.com, a view-only desktop map of the whole game, useful for planning."
+  },
+  "ito-transmuter": {
+    "term": "ITO transmuter",
+    "definition": "A mod that biases a portal’s hack output toward offensive (ITO-) or defensive (ITO+) gear."
+  },
+  "key": {
+    "term": "Portal key",
+    "definition": "Obtained by hacking a portal; needed to link to it. Can be stored in a key locker outside your item cap."
+  },
+  "key-locker": {
+    "term": "Key locker",
+    "definition": "Storage that holds keys without counting toward your 2,000-item inventory cap."
+  },
+  "kinetic-capsule": {
+    "term": "Kinetic Capsule",
+    "definition": "A capsule that crafts gear as you walk a set distance, normally 8 km per Program."
+  },
+  "level": {
+    "term": "Level",
+    "definition": "Agent levels run 1–16; portal levels run 1–8. Your level caps the level of gear you can use."
+  },
+  "link": {
+    "term": "Link",
+    "definition": "A beam joining two of your fully-built portals. You need the destination portal’s key, and links cannot cross."
+  },
+  "link-amp": {
+    "term": "Link Amp",
+    "definition": "A mod that extends how far a portal can link out."
+  },
+  "machina": {
+    "term": "Machina",
+    "definition": "The red, machine-controlled faction. It spreads on its own and is easy to clear."
+  },
+  "mind-unit": {
+    "term": "Mind Units (MU)",
+    "definition": "The score a control field claims, roughly the population living under it. The global blue-versus-green tally."
+  },
+  "mission": {
+    "term": "Mission",
+    "definition": "A curated sequence of portal tasks that earns a unique medal icon on your profile."
+  },
+  "mod": {
+    "term": "Mod",
+    "definition": "An item slotted into a portal (shield, heat sink, link amp, and so on). Four slots per portal, two per agent."
+  },
+  "multi-hack": {
+    "term": "Multi-Hack",
+    "definition": "A hack mod that raises how many times a portal can be hacked before it burns out."
+  },
+  "nl-1331": {
+    "term": "NL-1331",
+    "definition": "The XM Detection Vehicle: an occasional touring van, and now also a virtual event run through Dispatch."
+  },
+  "portal": {
+    "term": "Portal",
+    "definition": "A real-world point of interest you visit to play. Coloured grey (neutral), blue (Resistance), green (Enlightened) or red (Machina)."
+  },
+  "power-cube": {
+    "term": "Power cube",
+    "definition": "Bottled XM you tap to refill instantly. Levels 1–8 hold 1,000–8,000 XM."
+  },
+  "recursion": {
+    "term": "Recursion",
+    "definition": "Choosing at level 16 to reset to level 1, keeping all your badges. A prestige system."
+  },
+  "resistance": {
+    "term": "Resistance",
+    "definition": "The blue faction. Your team."
+  },
+  "resonator": {
+    "term": "Resonator",
+    "definition": "An item you deploy to capture and power a portal. Eight slots per portal; their average sets the portal level."
+  },
+  "sbul": {
+    "term": "SoftBank Ultra Link (SBUL)",
+    "definition": "A rare linking mod: +5x link range and +8 outbound links per copy, used to anchor big fielding ops."
+  },
+  "scanner": {
+    "term": "Scanner",
+    "definition": "The Ingress app itself, your window into the game."
+  },
+  "second-sunday": {
+    "term": "Second Sunday",
+    "definition": "The monthly online counterpart to First Saturday, run through Dispatch."
+  },
+  "shield": {
+    "term": "Portal Shield",
+    "definition": "A defence mod that adds mitigation, reducing the damage a portal’s resonators take when attacked."
+  },
+  "ultra-strike": {
+    "term": "Ultra Strike",
+    "definition": "A focused, short-range weapon, used to strip mods and shields and finish stubborn resonators."
+  },
+  "wayfarer": {
+    "term": "Wayfarer",
+    "definition": "Niantic’s system for reviewing new portal nominations. It replaced the old OPR."
+  },
+  "xm": {
+    "term": "XM",
+    "definition": "Exotic Matter, the energy that powers your actions. You collect it by walking through it."
+  },
+  "xmp-burster": {
+    "term": "XMP Burster",
+    "definition": "Your main weapon. It detonates in a circle centred on you, damaging enemy resonators."
+  }
+}

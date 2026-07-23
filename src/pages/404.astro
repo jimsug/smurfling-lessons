@@ -7,7 +7,7 @@ const locale = (Astro.currentLocale as Locale) ?? defaultLocale
 const t = useTranslations(locale)
 ---
 
-<Layout title="Not found — Smurfling Guide">
+<Layout title={`${t('notFound.pageTitle')} — ${t('site.name')}`}>
   <p class="eyebrow">{t('notFound.eyebrow')}</p>
   <h1 class="text-2xl font-bold text-fg">{t('notFound.title')}</h1>
   <p class="mt-2 text-muted">

@@ -17,26 +17,28 @@ import type { GetStaticPaths } from 'astro'
 // frontmatter, only imports (hence `defaultLocale` rather than a local alias).
 export const getStaticPaths = (async () => {
   const list = await lessonsForLocale(defaultLocale)
-  return list.map(({ entry, op, slug, isFallback }, i) => {
+  return list.map(({ entry, op, slug, title, summary, isFallback }, i) => {
     const prev = list[i - 1]
     const next = list[i + 1]
     return {
       params: { op, lesson: slug },
       props: {
         entry,
+        title,
+        summary,
         isFallback,
         prev: prev
-          ? { href: lessonHref(defaultLocale, prev.op, prev.slug), title: prev.entry.data.title }
+          ? { href: lessonHref(defaultLocale, prev.op, prev.slug), title: prev.title }
           : null,
         next: next
-          ? { href: lessonHref(defaultLocale, next.op, next.slug), title: next.entry.data.title }
+          ? { href: lessonHref(defaultLocale, next.op, next.slug), title: next.title }
           : null,
       },
     }
   })
 }) satisfies GetStaticPaths
 
-const { entry, isFallback, prev, next } = Astro.props
+const { entry, title, summary, isFallback, prev, next } = Astro.props
 const locale = (Astro.currentLocale as Locale) ?? defaultLocale
 const t = useTranslations(locale)
 const { Content } = await render(entry)
@@ -44,10 +46,10 @@ const op = getOpsBySlug(defaultLocale)[entry.data.op]
 ---
 
 <Layout
-  title={`${entry.data.title} — Smurfling Guide`}
-  description={entry.data.summary}
+  title={`${title} — ${t('site.name')}`}
+  description={summary}
 >
-  <nav class="text-xs text-muted" aria-label="Breadcrumb">
+  <nav class="text-xs text-muted" aria-label={t('nav.breadcrumbAriaLabel')}>
     <a href={localizedPath('/', locale)} class="hover:text-glow">{t('nav.dashboard')}</a>
     <span aria-hidden="true">&nbsp;/&nbsp;</span>
     <a href={localizedPath(`/ops/${op.slug}/`, locale)} class="hover:text-glow">{op.shortTitle}</a>
@@ -55,8 +57,8 @@ const op = getOpsBySlug(defaultLocale)[entry.data.op]
     <span aria-current="page">{t('lesson.breadcrumbLabel', { order: entry.data.order })}</span>
   </nav>
 
-  <h1 class="mt-3 text-2xl font-bold text-fg">{entry.data.title}</h1>
-  <p class="mt-1 text-muted">{entry.data.summary}</p>
+  <h1 class="mt-3 text-2xl font-bold text-fg">{title}</h1>
+  <p class="mt-1 text-muted">{summary}</p>
 
   {
     isFallback && (

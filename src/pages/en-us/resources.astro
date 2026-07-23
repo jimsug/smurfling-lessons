@@ -1,51 +1,55 @@
 ---
 import Layout from '../../layouts/Layout.astro'
+import { defaultLocale, type Locale } from '../../i18n/locales'
+import { useTranslations, type UIKey } from '../../i18n/ui'
+
+const locale = (Astro.currentLocale as Locale) ?? defaultLocale
+const t = useTranslations(locale)
 
 interface LinkItem {
   href: string
   label: string
-  note: string
+  noteKey: UIKey
 }
 
 const official: LinkItem[] = [
-  { href: 'https://ingress.com', label: 'ingress.com', note: 'news and the store' },
-  { href: 'https://intel.ingress.com', label: 'intel.ingress.com', note: 'the Intel Map' },
-  { href: 'https://wayfarer.nianticlabs.com', label: 'Niantic Wayfarer', note: 'portal nominations and reviews' },
-  { href: 'https://support.ingress.com', label: 'Ingress Help', note: 'official support and current rules' },
+  { href: 'https://ingress.com', label: 'ingress.com', noteKey: 'resources.official.ingress.note' },
+  { href: 'https://intel.ingress.com', label: 'intel.ingress.com', noteKey: 'resources.official.intel.note' },
+  {
+    href: 'https://wayfarer.nianticlabs.com',
+    label: 'Niantic Wayfarer',
+    noteKey: 'resources.official.wayfarer.note',
+  },
+  { href: 'https://support.ingress.com', label: 'Ingress Help', noteKey: 'resources.official.help.note' },
 ]
 
 const community: LinkItem[] = [
-  { href: 'https://fevgames.net', label: 'Fev Games', note: 'IngressFS listings and detailed game guides' },
-  { href: 'https://bannergress.com', label: 'Bannergress', note: 'find and plan mission banners worldwide' },
+  { href: 'https://fevgames.net', label: 'Fev Games', noteKey: 'resources.community.fevgames.note' },
+  { href: 'https://bannergress.com', label: 'Bannergress', noteKey: 'resources.community.bannergress.note' },
 ]
 ---
 
-<Layout
-  title="Resources — Smurfling Guide"
-  description="Where to go next, and how to plug into your local Ingress community."
->
-  <p class="eyebrow">Field guide</p>
-  <h1 class="text-2xl font-bold text-fg">Resources</h1>
+<Layout title={`${t('resources.title')} — ${t('site.name')}`} description={t('resources.metaDescription')}>
+  <p class="eyebrow">{t('resources.eyebrow')}</p>
+  <h1 class="text-2xl font-bold text-fg">{t('resources.title')}</h1>
   <p class="mt-1 text-muted">
-    Where to go next, and how to plug into the people around you.
+    {t('resources.intro')}
   </p>
 
   <section class="mt-8">
-    <h2 class="font-semibold text-fg">Find your local team</h2>
+    <h2 class="font-semibold text-fg">{t('resources.findTeam.heading')}</h2>
     <p class="mt-1 text-sm text-muted">
-      The single most useful thing you can do. There is no one official channel,
-      communities run on Telegram, Discord, Signal and others, and each area sorts
-      out its own. The fastest way in:
+      {t('resources.findTeam.body')}
     </p>
     <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-muted">
-      <li>Ask whoever sent you this link.</li>
-      <li>Post in faction comms: "new RES agent in [your area], where's the local chat?"</li>
-      <li>Turn up to a First Saturday and ask in person.</li>
+      <li>{t('resources.findTeam.step1')}</li>
+      <li>{t('resources.findTeam.step2')}</li>
+      <li>{t('resources.findTeam.step3')}</li>
     </ul>
   </section>
 
   <section class="mt-8">
-    <h2 class="font-semibold text-fg">Official Ingress</h2>
+    <h2 class="font-semibold text-fg">{t('resources.official.heading')}</h2>
     <ul class="mt-2 space-y-1 text-sm text-muted">
       {
         official.map((item) => (
@@ -58,7 +62,7 @@ const community: LinkItem[] = [
             >
               {item.label}
             </a>
-            {` — ${item.note}.`}
+            {` — ${t(item.noteKey)}.`}
           </li>
         ))
       }
@@ -66,10 +70,9 @@ const community: LinkItem[] = [
   </section>
 
   <section class="mt-8">
-    <h2 class="font-semibold text-fg">Community sites and tools</h2>
+    <h2 class="font-semibold text-fg">{t('resources.community.heading')}</h2>
     <p class="mt-1 text-sm text-muted">
-      Maintained by players, not Niantic. Your local team will have opinions on
-      what's worth using, so ask.
+      {t('resources.community.body')}
     </p>
     <ul class="mt-2 space-y-1 text-sm text-muted">
       {
@@ -83,7 +86,7 @@ const community: LinkItem[] = [
             >
               {item.label}
             </a>
-            {` — ${item.note}.`}
+            {` — ${t(item.noteKey)}.`}
           </li>
         ))
       }
@@ -91,13 +94,16 @@ const community: LinkItem[] = [
   </section>
 
   <section class="mt-8">
-    <h2 class="font-semibold text-fg">About this guide</h2>
+    <h2 class="font-semibold text-fg">{t('resources.about.heading')}</h2>
     <p class="mt-1 text-sm text-muted">
-      Inspired by the original
+      {t('footer.inspiredBy')}{' '}
       <a href="https://smurfling.guide" class="text-resistance hover:text-glow"
         >smurfling.guide</a
-      >. Content licensed CC BY-SA 4.0; site code MIT. Not affiliated with Niantic
-      Spatial.
+      >.{' '}
+      {t('footer.licensedPrefix')}{' '}
+      <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="text-resistance hover:text-glow"
+        >CC BY-SA 4.0</a
+      >{t('footer.licenseSuffix')}
     </p>
   </section>
 </Layout>

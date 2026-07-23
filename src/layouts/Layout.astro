@@ -59,7 +59,7 @@ const resourcesPath = localizedPath('/resources/', locale)
       <div
         class="mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-4"
       >
-        <a href={home} class="shrink-0 font-semibold tracking-wide text-glow">Smurfling Guide</a>
+        <a href={home} class="shrink-0 font-semibold tracking-wide text-glow">{t('site.name')}</a>
         <div class="flex items-center gap-4">
           <nav class="flex items-center gap-4 text-sm">
             <a href={glossaryPath} class="text-muted hover:text-glow">{t('nav.glossary')}</a>
@@ -76,7 +76,7 @@ const resourcesPath = localizedPath('/resources/', locale)
 
     <footer class="border-t border-edge/70 text-sm text-muted">
       <div class="mx-auto w-full max-w-3xl space-y-2 px-4 py-6">
-        <nav class="flex flex-wrap gap-x-4 gap-y-1" aria-label="Footer">
+        <nav class="flex flex-wrap gap-x-4 gap-y-1" aria-label={t('layout.footerAriaLabel')}>
           <a href={home} class="hover:text-glow">{t('nav.dashboard')}</a>
           <a href={glossaryPath} class="hover:text-glow">{t('nav.glossary')}</a>
           <a href={resourcesPath} class="hover:text-glow">{t('nav.resources')}</a>
