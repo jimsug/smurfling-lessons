@@ -1,9 +1,15 @@
 ---
-import Layout from '../layouts/Layout.astro'
-import { getGlossary, termLesson } from '../data/glossary'
-import { lessonHref, lessonsForLocale } from '../lib/lessons'
-import { defaultLocale, type Locale } from '../i18n/locales'
-import { useTranslations } from '../i18n/ui'
+import Layout from '../../layouts/Layout.astro'
+import { getGlossary, termLesson } from '../../data/glossary'
+import { lessonHref, lessonsForLocale } from '../../lib/lessons'
+import { locales, defaultLocale, type Locale } from '../../i18n/locales'
+import { useTranslations } from '../../i18n/ui'
+import type { GetStaticPaths } from 'astro'
+
+export const getStaticPaths = (() =>
+  locales.map((locale) => ({
+    params: { locale: locale === defaultLocale ? undefined : locale },
+  }))) satisfies GetStaticPaths
 
 const locale = (Astro.currentLocale as Locale) ?? defaultLocale
 const t = useTranslations(locale)
@@ -62,6 +68,6 @@ const lessonByKey = new Map(lessons.map((lesson) => [`${lesson.op}/${lesson.slug
   </dl>
 
   <script>
-    import '../scripts/glossary.ts'
+    import '../../scripts/glossary.ts'
   </script>
 </Layout>

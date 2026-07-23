@@ -4,7 +4,7 @@ import { render } from 'astro:content'
 import { getOpsBySlug } from '../../../../data/ops'
 import { lessonHref, lessonSlug, lessonsForLocale } from '../../../../lib/lessons'
 import { lessonKey } from '../../../../lib/progress'
-import { defaultLocale, type Locale } from '../../../../i18n/locales'
+import { locales, defaultLocale, type Locale } from '../../../../i18n/locales'
 import { useTranslations } from '../../../../i18n/ui'
 import { localizedPath } from '../../../../i18n/paths'
 import Lvl from '../../../../components/Lvl.astro'
@@ -12,35 +12,34 @@ import Medal from '../../../../components/Medal.astro'
 import Term from '../../../../components/Term.astro'
 import type { GetStaticPaths } from 'astro'
 
-// getStaticPaths is extracted into its own module scope by Astro's
-// compiler: it cannot see plain consts declared elsewhere in this
-// frontmatter (including a LOCALE const declared here), only imports -
-// hence the literal 'en-us' inline rather than a shared local constant.
 export const getStaticPaths = (async () => {
-  const list = await lessonsForLocale('en-us')
-  return list.map(({ entry, op, slug, title, summary, isFallback }, i) => {
-    const prev = list[i - 1]
-    const next = list[i + 1]
-    return {
-      params: { op, lesson: slug },
-      props: {
-        entry,
-        title,
-        summary,
-        isFallback,
-        prev: prev ? { href: lessonHref('en-us', prev.op, prev.slug), title: prev.title } : null,
-        next: next ? { href: lessonHref('en-us', next.op, next.slug), title: next.title } : null,
-      },
-    }
-  })
+  const perLocale = await Promise.all(
+    locales.map(async (locale) => ({ locale, list: await lessonsForLocale(locale) })),
+  )
+  return perLocale.flatMap(({ locale, list }) =>
+    list.map(({ entry, op, slug, title, summary, isFallback }, i) => {
+      const prev = list[i - 1]
+      const next = list[i + 1]
+      return {
+        params: { locale: locale === defaultLocale ? undefined : locale, op, lesson: slug },
+        props: {
+          entry,
+          title,
+          summary,
+          isFallback,
+          prev: prev ? { href: lessonHref(locale, prev.op, prev.slug), title: prev.title } : null,
+          next: next ? { href: lessonHref(locale, next.op, next.slug), title: next.title } : null,
+        },
+      }
+    }),
+  )
 }) satisfies GetStaticPaths
 
-const LOCALE: Locale = 'en-us'
 const { entry, title, summary, isFallback, prev, next } = Astro.props
 const locale = (Astro.currentLocale as Locale) ?? defaultLocale
 const t = useTranslations(locale)
 const { Content } = await render(entry)
-const op = getOpsBySlug(LOCALE)[entry.data.op]
+const op = getOpsBySlug(locale)[entry.data.op]
 ---
 
 <Layout

@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro'
 import { defaultLocale, type Locale } from '../i18n/locales'
 import { useTranslations } from '../i18n/ui'
+import { localizedPath } from '../i18n/paths'
 
 const locale = (Astro.currentLocale as Locale) ?? defaultLocale
 const t = useTranslations(locale)
@@ -14,6 +15,6 @@ const t = useTranslations(locale)
     {t('notFound.body')}
   </p>
   <p class="mt-4">
-    <a href="/" class="text-resistance hover:text-glow">{t('notFound.backLink')}</a>
+    <a href={localizedPath('/', locale)} class="text-resistance hover:text-glow">{t('notFound.backLink')}</a>
   </p>
 </Layout>
