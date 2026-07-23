@@ -1,6 +1,9 @@
 # build output
 dist/
 
+# local dry-run screenshot output
+.screenshots/
+
 # generated types and cache
 .astro/
 
