@@ -31,9 +31,15 @@ pnpm build    # confirm the site builds
 Lessons live at `src/content/lessons/en-au/<op>/<lesson>.mdx` (write new
 lessons in Australian English - see
 [Internationalisation](#internationalisation) below for the `en-us` copy).
-Frontmatter is `title`, `op` (the op slug), `order` (position within the op),
-and `summary`. The six op slugs and their order are fixed in
-`src/data/ops.ts`.
+Frontmatter is just `op` (the op slug) and `order` (position within the op).
+The six op slugs and their order are fixed in `src/data/ops.ts`.
+
+The lesson's title and summary aren't in the MDX frontmatter - they live in
+`src/i18n/lesson-text/en-au.json`, keyed `<op>/<lesson>.title` and
+`<op>/<lesson>.summary`. Add both keys when adding a new lesson (`src/i18n/lesson-text.test.ts`
+fails CI if either is missing). This split exists so a Weblate-managed
+translation surface never has to touch `op`/`order`, which must stay
+structural and untranslated.
 
 Three MDX components are available in lesson bodies:
 
@@ -52,11 +58,13 @@ the default otherwise, for the cases where a real screenshot is unavoidable.
 
 ## Adding a glossary term
 
-Add an id to the `glossaryIds` list and a `{ term, definition }` entry under
-`en-au` in `glossaryText`, both in `src/data/glossary.ts`, then add the same
-entry under `en-us` (converting spelling only - see below). If the term is
-covered by a specific lesson, add it to `termLesson` too (`id` -> `op/lesson`)
-so the glossary page can link to it and `<Term>` popovers stay consistent.
+Add an id to the `glossaryIds` list in `src/data/glossary.ts`, then a
+`{ term, definition }` entry under that id in both
+`src/data/glossary-text/en-au.json` and `en-us.json` (converting spelling only
+- see below; `src/data/text-coverage.test.ts` fails CI if a key is missing
+from either locale). If the term is covered by a specific lesson, add it to
+`termLesson` too (`id` -> `op/lesson`) in `glossary.ts` so the glossary page
+can link to it and `<Term>` popovers stay consistent.
 
 ## Internationalisation
 
@@ -78,24 +86,35 @@ handle an arbitrary number of locales:
    required *before* step 1 can land cleanly: `src/i18n/ui.test.ts` has a
    hard-gate test asserting every UI key has a translation for every
    configured non-default locale, so an incomplete dictionary fails CI.
-3. Fill in the locale's entries in `opsText` (`src/data/ops.ts`) and
-   `glossaryText` (`src/data/glossary.ts`).
-4. Add `src/pages/<locale>/index.astro`, `glossary.astro`, and
-   `resources.astro` (hand-translated - these are page-length content, not
-   dictionary keys), plus `src/pages/<locale>/ops/[op]/index.astro` and
-   `[lesson].astro` (thin wrappers - copy the `en-us` ones and swap the
-   locale constant/literal, including inside `getStaticPaths` - see the
-   comment in either file about why it can't be a shared module-level const).
+3. Fill in the locale's entries in `src/data/ops-text/<locale>.json` and
+   `src/data/glossary-text/<locale>.json`.
+4. Add `src/pages/<locale>/index.astro`, `glossary.astro`, `resources.astro`,
+   `ops/[op]/index.astro`, and `[lesson].astro` - all five are thin wrappers,
+   copy the `en-us` ones and swap the locale constant/literal (including
+   inside `getStaticPaths` for the two dynamic-route files - see the comment
+   in either file about why it can't be a shared module-level const). None of
+   these carry hardcoded prose themselves; everything they render comes from
+   `src/i18n/ui.ts`'s dictionary, `getOps()`/`getGlossary()`, or
+   `lessonsForLocale()`.
 5. Add an entry to `routing.fallback` (e.g. `{ 'en-us': 'en-au', '<locale>':
    'en-au' }`) in `astro.config.mjs`'s `i18n` block, so any page in that
    locale you haven't built yet transparently shows the default version
    instead of 404ing.
-6. Translate lesson MDX incrementally under `src/content/lessons/<locale>/`.
+6. Translate lesson MDX incrementally under `src/content/lessons/<locale>/`,
+   and the matching `title`/`summary` keys in `src/i18n/lesson-text/<locale>.json`.
    Nothing needs to be complete before it ships: `lessonsForLocale()` in
    `src/lib/lessons.ts` falls back to the default locale's copy of any lesson
    that isn't translated yet, and the lesson page shows a "not translated
    yet" banner when it does. Run `pnpm i18n:coverage` to see per-locale
-   translation percentages.
+   translation percentages (lesson-file coverage only - it doesn't track
+   `lesson-text` JSON completeness).
+
+   The two can land independently, but a lesson page always shows its title
+   and summary in whichever locale the *body* actually renders in - if the
+   MDX file isn't translated yet, the page falls back to `en-au` for the
+   title and summary too, even if `lesson-text/<locale>.json` already has a
+   translated entry for it. This avoids a translated heading sitting above an
+   untranslated body and the "not yet translated" banner at the same time.
 7. If a translated lesson uses `<Term>`, check that its popover shows the
    right locale's definition. `Term.astro` resolves locale from the URL
    rather than `Astro.currentLocale`, since it's rendered from inside MDX
@@ -106,7 +125,8 @@ Note that a lesson's slug (file/folder name) stays the same across locales
 regardless of what that word means in the new locale - `lessonsForLocale()`
 matches translations to their default-locale original by identical slug, so
 renaming one would just make the translation invisible rather than updating
-the URL.
+the URL. The same `<op>/<slug>` pair is also the key into
+`lesson-text/<locale>.json`, so a rename needs updating there too.
 
 ## Licence
 

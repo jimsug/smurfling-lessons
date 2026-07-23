@@ -2,8 +2,10 @@
 import { getRelativeLocaleUrl } from 'astro:i18n'
 import { locales, localeNames, defaultLocale, type Locale } from '../i18n/locales'
 import { stripLocalePrefix } from '../i18n/paths'
+import { useTranslations } from '../i18n/ui'
 
 const locale = (Astro.currentLocale as Locale) ?? defaultLocale
+const t = useTranslations(locale)
 const { path } = stripLocalePrefix(Astro.url.pathname)
 ---
 
@@ -15,7 +17,7 @@ const { path } = stripLocalePrefix(Astro.url.pathname)
       <button
         type="button"
         popovertarget="language-menu"
-        aria-label="Language"
+        aria-label={t('layout.languageSwitcherAriaLabel')}
         class="language-button"
       >
         <svg

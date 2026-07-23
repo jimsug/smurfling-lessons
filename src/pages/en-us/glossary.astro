@@ -12,7 +12,7 @@ const lessons = await lessonsForLocale(locale)
 const lessonByKey = new Map(lessons.map((lesson) => [`${lesson.op}/${lesson.slug}`, lesson]))
 ---
 
-<Layout title={`${t('nav.glossary')} — Smurfling Guide`} description={t('glossary.metaDescription')}>
+<Layout title={`${t('nav.glossary')} — ${t('site.name')}`} description={t('glossary.metaDescription')}>
   <p class="eyebrow">{t('glossary.eyebrow')}</p>
   <h1 class="text-2xl font-bold text-fg">{t('nav.glossary')}</h1>
   <p class="mt-1 text-muted">
@@ -51,7 +51,7 @@ const lessonByKey = new Map(lessons.map((lesson) => [`${lesson.op}/${lesson.slug
                   href={lessonHref(locale, lesson.op, lesson.slug)}
                   class="text-resistance hover:text-glow"
                 >
-                  {t('glossary.coveredIn', { title: lesson.entry.data.title })}
+                  {t('glossary.coveredIn', { title: lesson.title })}
                 </a>
               </dd>
             )}

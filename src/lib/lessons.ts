@@ -2,6 +2,7 @@ import type { CollectionEntry } from 'astro:content'
 import { getCollection } from 'astro:content'
 import { opsMeta } from '../data/ops'
 import { defaultLocale, type Locale } from '../i18n/locales'
+import { lessonText } from '../i18n/lesson-text'
 
 export type Lesson = CollectionEntry<'lessons'>
 
@@ -24,6 +25,8 @@ export interface LocalizedLesson {
   entry: Lesson
   op: string
   slug: string
+  title: string
+  summary: string
   /** True when no translation exists yet and `entry` is the default-locale fallback. */
   isFallback: boolean
 }
@@ -49,6 +52,19 @@ export async function lessonsForLocale(locale: Locale): Promise<LocalizedLesson[
   return canonical.map(({ op, slug }) => {
     const localized = byId.get(`${locale}/${op}/${slug}`)
     const fallback = byId.get(`${defaultLocale}/${op}/${slug}`)!
-    return { entry: localized ?? fallback, op, slug, isFallback: !localized }
+    const isFallback = !localized
+    // Title/summary follow the same effective locale as the resolved body,
+    // rather than being resolved independently - otherwise a translated
+    // heading could sit above an untranslated body and the "not yet
+    // translated" banner, a confusing partial state.
+    const textLocale = isFallback ? defaultLocale : locale
+    return {
+      entry: localized ?? fallback,
+      op,
+      slug,
+      title: lessonText(textLocale, op, slug, 'title'),
+      summary: lessonText(textLocale, op, slug, 'summary'),
+      isFallback,
+    }
   })
 }

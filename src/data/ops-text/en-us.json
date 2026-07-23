@@ -1,0 +1,32 @@
+{
+  "agent-basics": {
+    "title": "Op: Agent Basics",
+    "shortTitle": "Agent Basics",
+    "description": "The scanner, portals, XM, and how you level up."
+  },
+  "combat-ready": {
+    "title": "Op: Combat Ready",
+    "shortTitle": "Combat Ready",
+    "description": "Weapons, mods, and holding ground."
+  },
+  "deep-cover": {
+    "title": "Op: Deep Cover",
+    "shortTitle": "Deep Cover",
+    "description": "Anomalies, missions, and the wider world you are now part of."
+  },
+  "field-operations": {
+    "title": "Op: Field Operations",
+    "shortTitle": "Field Operations",
+    "description": "Linking, fielding, and reading the Intel map."
+  },
+  "gear-logistics": {
+    "title": "Op: Gear & Logistics",
+    "shortTitle": "Gear & Logistics",
+    "description": "Inventory, gear, farming, and keeping stocked."
+  },
+  "welcome-to-the-resistance": {
+    "title": "Op: Welcome to the Resistance",
+    "shortTitle": "Welcome to the Resistance",
+    "description": "Meet the Resistance and find the people who brought you in."
+  }
+}

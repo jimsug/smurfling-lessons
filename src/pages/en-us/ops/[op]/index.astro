@@ -31,8 +31,8 @@ const prevOp = sortedOps[opIndex - 1] ?? null
 const nextOp = sortedOps[opIndex + 1] ?? null
 ---
 
-<Layout title={`${op.title} — Smurfling Guide`} description={op.description}>
-  <nav class="text-xs text-muted" aria-label="Breadcrumb">
+<Layout title={`${op.title} — ${t('site.name')}`} description={op.description}>
+  <nav class="text-xs text-muted" aria-label={t('nav.breadcrumbAriaLabel')}>
     <a href={localizedPath('/', locale)} class="hover:text-glow">{t('nav.dashboard')}</a>
     <span aria-hidden="true">&nbsp;/&nbsp;</span>
     <span aria-current="page">{t('op.breadcrumbLabel', { order: op.order })}</span>
@@ -60,7 +60,7 @@ const nextOp = sortedOps[opIndex + 1] ?? null
               type="checkbox"
               data-lesson-key={lessonKey(lesson.op, lesson.slug)}
               class="size-6 accent-resistance"
-              aria-label={t('op.markCompleteAriaLabel', { title: lesson.entry.data.title })}
+              aria-label={t('op.markCompleteAriaLabel', { title: lesson.title })}
             />
           </label>
           <div class="min-w-0">
@@ -68,9 +68,9 @@ const nextOp = sortedOps[opIndex + 1] ?? null
               href={lessonHref(locale, lesson.op, lesson.slug)}
               class="font-medium text-fg hover:text-glow"
             >
-              {lesson.entry.data.order}. {lesson.entry.data.title}
+              {lesson.entry.data.order}. {lesson.title}
             </a>
-            <p class="mt-0.5 text-sm text-muted">{lesson.entry.data.summary}</p>
+            <p class="mt-0.5 text-sm text-muted">{lesson.summary}</p>
           </div>
         </li>
       ))
