@@ -75,27 +75,57 @@ When adding or editing `en-au` lesson content, add the equivalent `en-us`
 file alongside it with just the spelling converted; don't leave one locale's
 copy of a lesson stale relative to the other.
 
-Adding a genuinely different (non-English) locale is content work, not
-plumbing work - the routing, dictionary, switcher, detection, and page files
-already handle an arbitrary number of locales:
+### Translating via Weblate
+
+Every translatable JSON dictionary (`src/i18n/locales/`, `src/i18n/lesson-text/`,
+`src/data/ops-text/`, `src/data/glossary-text/`) and every lesson MDX body is
+managed through [Weblate](https://hosted.weblate.org/projects/smurfling-guide/),
+with each lesson as its own component (`<op>/<lesson>`). That's the preferred
+way to contribute a translation - don't hand-edit those files directly unless
+you're doing repo maintenance (adding a new lesson's `en-au` source keys, for
+example - that's source text, not a translation of it, and still happens in
+the PR that adds the lesson). Weblate opens PRs back against `development`
+with translated content; review and merge those like any other PR.
+
+After every successful production deploy, `.github/workflows/deploy.yml`
+screenshots each lesson page and attaches the image to its matching Weblate
+component, so translators see the real page layout (tables, `<Lvl>`/`<Medal>`
+colouring and so on) alongside the strings they're translating, rather than
+translating blind. See `scripts/weblate-screenshots.mjs`. That job needs
+`WEBLATE_API_TOKEN` set as a repo secret (a project-scoped Weblate token,
+`wlp_` prefix, scoped to just `smurfling-guide`) - if it's failing, check
+whether the secret's been added under repo Settings -> Secrets and variables
+-> Actions.
+
+Weblate only covers that content surface - it doesn't touch locale
+registration, covered next.
+
+### Adding a genuinely different (non-English) locale
+
+This is mostly content work now, not plumbing work - the routing, dictionary,
+switcher, detection, and page files already handle an arbitrary number of
+locales:
 
 1. Add the locale code to `locales` (and a display name to `localeNames`) in
    `src/i18n/locales.ts`. This alone makes the switcher, the
    detection/redirect script, and every page under `src/pages/[...locale]/`
    go live for that locale.
-2. Fill in the locale's entries in `src/i18n/ui.ts`'s `overrides`. This is
-   required *before* step 1 can land cleanly: `src/i18n/ui.test.ts` has a
-   hard-gate test asserting every UI key has a translation for every
-   configured non-default locale, so an incomplete dictionary fails CI.
+2. Fill in the locale's entries in `src/i18n/locales/<locale>.json` (add the
+   locale as a target language on the relevant Weblate components and let
+   translation happen there, rather than by hand). This is required *before*
+   step 1 can land cleanly: `src/i18n/ui.test.ts` has a hard-gate test
+   asserting every UI key has a translation for every configured non-default
+   locale, so an incomplete dictionary fails CI.
 3. Fill in the locale's entries in `src/data/ops-text/<locale>.json` and
-   `src/data/glossary-text/<locale>.json`.
+   `src/data/glossary-text/<locale>.json` (same, via Weblate).
 4. Add an entry to `routing.fallback` (e.g. `{ 'en-us': 'en-au', '<locale>':
    'en-au' }`) in `astro.config.mjs`'s `i18n` block, so any page in that
    locale you haven't built yet transparently shows the default version
    instead of 404ing.
 5. Translate lesson MDX incrementally under `src/content/lessons/<locale>/`,
-   and the matching `title`/`summary` keys in `src/i18n/lesson-text/<locale>.json`.
-   Nothing needs to be complete before it ships: `lessonsForLocale()` in
+   and the matching `title`/`summary` keys in `src/i18n/lesson-text/<locale>.json`
+   - via Weblate once the MDX component discovery add-on picks up the new
+   locale directory. Nothing needs to be complete before it ships: `lessonsForLocale()` in
    `src/lib/lessons.ts` falls back to the default locale's copy of any lesson
    that isn't translated yet, and the lesson page shows a "not translated
    yet" banner when it does. Run `pnpm i18n:coverage` to see per-locale
@@ -120,24 +150,6 @@ matches translations to their default-locale original by identical slug, so
 renaming one would just make the translation invisible rather than updating
 the URL. The same `<op>/<slug>` pair is also the key into
 `lesson-text/<locale>.json`, so a rename needs updating there too.
-
-### Translating via Weblate
-
-Lesson bodies and the JSON dictionaries above are managed through a hosted
-Weblate project at [hosted.weblate.org/projects/smurfling-guide](https://hosted.weblate.org/projects/smurfling-guide/),
-with each lesson as its own component (`<op>/<lesson>`).
-
-After every successful production deploy, `.github/workflows/deploy.yml`
-screenshots each lesson page and attaches the image to its matching Weblate
-component, so translators see the real page layout (tables, `<Lvl>`/`<Medal>`
-colouring and so on) alongside the strings they're translating, rather than
-translating blind. See `scripts/weblate-screenshots.mjs`.
-
-That job needs `WEBLATE_API_TOKEN` set as a repo secret (a project-scoped
-Weblate token, `wlp_` prefix, scoped to just `smurfling-guide`) - this is a
-manual setup step outside of any single PR, so if the job is failing check
-whether the secret's been added under repo Settings -> Secrets and
-variables -> Actions.
 
 ## Licence
 

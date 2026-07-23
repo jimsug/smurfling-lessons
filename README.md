@@ -49,12 +49,23 @@ pnpm screenshots    # screenshot lesson pages and upload to Weblate (needs
 
 ## Content
 
-- Op metadata: `src/data/ops.ts` - stable metadata (slug, order, badge) plus
-  per-locale text (title, description), read via `getOps(locale)`.
+- Op metadata: `src/data/ops.ts` - stable metadata (slug, order, badge), plus
+  per-locale text (title, description) in `src/data/ops-text/<locale>.json`,
+  read together via `getOps(locale)`.
 - Lessons: MDX under `src/content/lessons/<locale>/<op>/<lesson>.mdx`, loaded
-  as the `lessons` collection. Frontmatter: `title`, `op`, `order`, `summary`.
-- Glossary: `src/data/glossary.ts`, same stable-id-plus-per-locale-text shape,
-  read via `getGlossary(locale)`, with each term mapped to its lesson.
+  as the `lessons` collection. Frontmatter is just `op` and `order` - title
+  and summary live in `src/i18n/lesson-text/<locale>.json` instead, keyed
+  `<op>/<lesson>.title`/`.summary`.
+- Glossary: stable ids in `src/data/glossary.ts`, per-locale `{ term,
+  definition }` text in `src/data/glossary-text/<locale>.json`, read together
+  via `getGlossary(locale)`, with each term mapped to its lesson.
+- UI chrome strings: `src/i18n/locales/<locale>.json`, read via
+  `useTranslations(locale)` in `src/i18n/ui.ts`.
+
+All of the above are plain per-locale JSON dictionaries specifically so they
+can be managed through [Weblate](https://hosted.weblate.org/projects/smurfling-guide/)
+rather than requiring a code change for every translation - see
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 Lessons can use a few MDX components: `<Lvl n={8} />` colours a portal or agent
 level, `<Medal tier="gold" />` a medal tier, and `<Term id="xm">XM</Term>` adds
