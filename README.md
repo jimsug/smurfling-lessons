@@ -27,7 +27,8 @@ alongside their local team.
 - Progress tracking in localStorage that lights an op badge when its lessons are
   done. No accounts, no analytics, no cookies.
 - Australian and US English, with a language switcher and automatic
-  browser-language detection on first visit.
+  browser-language detection on first visit. The footer links out to the
+  project on Weblate for anyone wanting to help translate.
 
 ## Develop
 
